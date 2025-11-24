@@ -50,7 +50,7 @@ test.describe('Manajemen Role', () => {
         })
 
         test('Search By Role - Search Role Terdata', async ({ page }) => {
-            await runSearchTest(page, 2, "Supervisor");
+            await runSearchTest(page, 2, "supervisor");
         })
 
         test('Empty Search', async ({ page }) => {
