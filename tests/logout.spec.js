@@ -2,6 +2,7 @@ import test from "@playwright/test";
 import { formLogin } from "../pages/login/formLogin";
 import { logoutAction } from "../pages/logout/logoutAction";
 
+test.use({ storageState: 'user.json' });
 test.describe('Logout', () => {
     let login, logout;
 
@@ -9,11 +10,7 @@ test.describe('Logout', () => {
         login = new formLogin(page);
         logout = new logoutAction(page);
     
-        //Login
-        await login.navigate('https://hse-staging.transtrack.id/login');
-        await login.usernameInput('bagas@transtrack.id');
-        await login.passwordInput('Password123@');
-        await login.buttonLogin();
+        await login.navigate('https://hse-staging.transtrack.id/dashboard');
         await login.checkUrl('https://hse-staging.transtrack.id/dashboard');
     })
 

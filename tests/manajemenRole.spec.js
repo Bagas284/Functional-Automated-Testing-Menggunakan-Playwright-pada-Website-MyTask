@@ -9,6 +9,7 @@ import { form } from "../pages/Form/form";
 import { popup } from "../pages/Form/popup";
 import { detail } from "../pages/check data/detail";
 
+test.use({ storageState: 'user.json' });
 test.describe('Manajemen Role', () => {
     let login, sidebarClick, buttonAction, inputTeks, clickRole, notif, popupDelete, detailPage;
 
@@ -28,11 +29,7 @@ test.describe('Manajemen Role', () => {
         popupDelete = new popup(page);
         detailPage = new detail(page);
 
-        //Login
-        await login.navigate('https://hse-staging.transtrack.id/login');
-        await login.usernameInput('bagas@transtrack.id');
-        await login.passwordInput('Password123@');
-        await login.buttonLogin();
+        await login.navigate('https://hse-staging.transtrack.id/dashboard');
         await login.checkUrl('https://hse-staging.transtrack.id/dashboard');
 
         //Masuk menu role

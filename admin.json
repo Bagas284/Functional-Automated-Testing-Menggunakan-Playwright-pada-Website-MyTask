@@ -1,0 +1,15 @@
+{
+  "cookies": [
+    {
+      "name": "auth:token",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBsb3llZUlkIjowLCJleHAiOjE3NjUzNjQyOTUsImlkIjoxLCJ1c2VySWQiOjF9.Nc6Wj2r090l23lBZN-Opg5hR_f8jxc56hLL8fUe9XF0",
+      "domain": "hse-staging.transtrack.id",
+      "path": "/",
+      "expires": 1764845901.189272,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": []
+}

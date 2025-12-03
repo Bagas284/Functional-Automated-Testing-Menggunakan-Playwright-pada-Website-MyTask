@@ -4,23 +4,22 @@ import { sidebar } from "../pages/sidebar";
 import { search } from "../pages/search/search";
 import { filter } from "../pages/filter/filter";
 import { button } from "../pages/button";
+import { radioButtonTipePengguna } from "../pages/Form/radioButtonTipePengguna";
 
+test.use({ storageState: 'user.json' });
 test.describe('Pengguna', () => {
-    let login, sidebarClick, filterOpsi, buttonAction;
+    let login, sidebarClick, filterOpsi, buttonAction, rbTipePengguna;
 
     test.beforeEach(async ({ page }) => {
             login = new formLogin(page);
             sidebarClick = new sidebar(page);
             filterOpsi = new filter(page);
             buttonAction = new button(page);
-    
-            //Login
-            await login.navigate('https://hse-staging.transtrack.id/login');
-            await login.usernameInput('bagas@transtrack.id');
-            await login.passwordInput('Password123@');
-            await login.buttonLogin();
+            rbTipePengguna = new radioButtonTipePengguna(page);
+        
+            await login.navigate('https://hse-staging.transtrack.id/dashboard');
             await login.checkUrl('https://hse-staging.transtrack.id/dashboard');
-    
+            
             //Masuk menu role
             await sidebarClick.clickSidebar('#menuUsers');
             await login.checkUrl('https://hse-staging.transtrack.id/users');
@@ -46,6 +45,7 @@ test.describe('Pengguna', () => {
         })
 
         test('Search By Nama Pengguna - Search Nama Pengguna Setelah Melakukan Filter Date Range', async ({ page }) => {
+            await filterOpsi.filterOption();
             await filterOpsi.filterDateRange(
                 '2025', 'Oct', '20',
                 '2025', 'Oct', '23'
@@ -55,6 +55,7 @@ test.describe('Pengguna', () => {
         })
 
         test('Search By Nama Pengguna - Search Nama Pengguna Setelah Melakukan Filter Role', async ({ page }) => {
+            await filterOpsi.filterOption();
             await filterOpsi.selectRole('Admin');
             await buttonAction.checkAndClick('Terapkan Filter');
             await runSearchTest(page, 1, "Bagas Intern QA");
@@ -102,6 +103,23 @@ test.describe('Pengguna', () => {
 
         test.afterEach(async ({ page }) => {
             await page.mouse.click(50, 50);
+        })
+    })
+
+    test.describe('Pengguna - Tambah Pengguna', () => {
+        test.beforeEach(async ({ page }) => {
+            await buttonAction.checkAndClick('Tambah');
+            await login.checkUrl('https://hse-staging.transtrack.id/users/create');
+        })
+
+        test('Batal', async ({ page }) => {
+            await buttonAction.checkAndClick('Batal')
+            //Check
+            await login.checkUrl('https://hse-staging.transtrack.id/users');
+        })
+
+        test('Tipe Pengguna Web', async ({ page }) => {
+            await rbTipePengguna.selectTipePengguna('Mobile User')
         })
     })
 })
