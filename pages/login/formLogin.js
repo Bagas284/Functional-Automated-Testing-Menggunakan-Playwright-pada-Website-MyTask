@@ -5,9 +5,8 @@ export class formLogin extends navigateUrl{
     constructor(page){
         super(page);
         this.page = page;
-        this.usernamefield = page.getByRole('textbox', { name: 'Email or Username' });
-        this.passwordField = page.getByRole('textbox', { name: 'Password' });
-
+        this.usernamefield = page.locator('#inputEmail');
+        this.passwordField = page.locator('#inputPassword');
     }
 
     async usernameInput(username){

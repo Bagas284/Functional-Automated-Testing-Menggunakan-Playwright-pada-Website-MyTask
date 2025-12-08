@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 
-export class filter{
+export class filter {
     constructor(page){
         this.page = page;
         //Filter
@@ -9,8 +9,7 @@ export class filter{
         //Date Range
         this.inputDateRange = page.locator('#inputFilterDateRange');
         //Role
-        this.role = page.getByRole('textbox', { name: 'Role' });
-        this.dropdownRole = page.locator('#dropdownRole');
+        this.dropdown= page.locator('#dropdownRole');
     }
 
     async filterOption(){
@@ -108,10 +107,13 @@ export class filter{
             .click();
     }
 
-    async selectRole(namaRole){
-        await this.role.fill(namaRole);
-        await expect(this.dropdownRole).toBeVisible();
-        await this.dropdownRole.getByText(namaRole, { exact: true }).click();
-        await expect(this.role).toHaveValue(namaRole);
+    async selectRole(teks){
+        const fieldRole =  await this.page.getByRole('textbox', { name: 'Role' });
+
+        await fieldRole.fill(teks);
+
+        await expect(this.dropdown).toBeVisible();
+        await this.dropdown.getByText(teks, { exact: true }).first().click();
+        await expect(fieldRole).toHaveValue(teks);
     }
 }

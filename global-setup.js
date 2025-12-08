@@ -4,10 +4,14 @@ import { formLogin } from './pages/login/formLogin';
 async function loginAndSave(context, page, username, password, outputFile){
     const login = new formLogin(page);
 
+    await login.navigate('https://hse-staging.transtrack.id/login');
+
     await login.usernameInput(username);
     await login.passwordInput(password);
     await login.buttonLogin();
 
+    await login.checkUrl('https://hse-staging.transtrack.id/dashboard');
+    
     await context.storageState({ path: outputFile });
 }
 
