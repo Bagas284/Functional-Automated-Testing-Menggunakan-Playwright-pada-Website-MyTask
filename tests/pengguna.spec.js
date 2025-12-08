@@ -8,10 +8,11 @@ import { radioButton } from "../pages/Form/radioButton";
 import { notifikasi } from "../pages/notifikasi/notifikasi";
 import { dropdown } from "../pages/Form/dropdown";
 import { form } from "../pages/Form/form";
+import { detail } from "../pages/check data/detail";
 
 test.use({ storageState: 'user.json' });
 test.describe('Pengguna', () => {
-    let login, sidebarClick, filterOpsi, buttonAction, rbTipePengguna,notif, inputRole, inputForm;
+    let login, sidebarClick, filterOpsi, buttonAction, rbTipePengguna,notif, inputRole, inputForm, detailPage;
 
     test.beforeEach(async ({ page }) => {
             login = new formLogin(page);
@@ -22,6 +23,7 @@ test.describe('Pengguna', () => {
             notif = new notifikasi(page);
             inputRole = new dropdown(page);
             inputForm = new form(page);
+            detailPage = new detail(page);
         
             await login.navigate('https://hse-staging.transtrack.id/dashboard');
             await login.checkUrl('https://hse-staging.transtrack.id/dashboard');
@@ -287,6 +289,49 @@ test.describe('Pengguna', () => {
                 await login.checkUrl('https://hse-staging.transtrack.id/users');
                 await runSearchTest(page, 1, namaPenggunaMob);
             })
+        })
+    })
+
+    test.describe('Pengguna - Detail Pengguna', () => {
+        const runSearchTest = async (page, column, keyword) => {
+            const inputSearch = new search(page, column);
+            await inputSearch.search(keyword);
+            await inputSearch.checkSearch();
+        }
+
+        const tipePenggunaWeb = 'Web User';
+        const role = 'Supervisor';
+        const namaPenggunaWeb = 'Bagas Website';
+        const emailWeb = 'bagasweb@transtrack.id';
+        const nomorTeleponWeb = '082141676046';
+        const passwordWeb = 'Password123@';
+
+        test.beforeEach(async ({ page }) => {
+            // Tambah pengguna
+            await buttonAction.checkAndClick('Tambah');
+            await login.checkUrl('https://hse-staging.transtrack.id/users/create');
+            await rbTipePengguna.selectRadioButton(tipePenggunaWeb);
+            await inputRole.selectDropdown(role);
+            await inputForm.formInput('Nama Pengguna', namaPenggunaWeb);
+            await inputForm.formInput('Email', emailWeb);
+            await inputForm.formInput('Nomor Telepon', nomorTeleponWeb);
+            await inputForm.formInput('Kata Sandi', passwordWeb);
+            await buttonAction.checkAndClick('Simpan');
+        
+            //Check
+            await notif.notificationCheck('Pengguna berhasil ditambahkan');
+            await login.checkUrl('https://hse-staging.transtrack.id/users');
+            await runSearchTest(page, 1, namaPenggunaWeb);
+        })
+
+        test('Detail Role - Kesesuaian Data', async({ page }) => {
+            await buttonAction.moreOption(namaPenggunaWeb, 'Detail');
+
+            //Check
+            await detailPage.detailCheckData(role);
+            await detailPage.detailCheckData(namaPenggunaWeb);
+            await detailPage.detailCheckData(emailWeb);
+            await detailPage.detailCheckData(nomorTeleponWeb);
         })
     })
 })

@@ -2,10 +2,10 @@
   "cookies": [
     {
       "name": "auth:token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBsb3llZUlkIjowLCJleHAiOjE3NjU3NzMxMDIsImlkIjoxLCJ1c2VySWQiOjF9.v3g462N1pzuIraCxRrnigoFYzGAbgIALsYg2Qm80YD4",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBsb3llZUlkIjowLCJleHAiOjE3NjU3ODEzNzAsImlkIjoxLCJ1c2VySWQiOjF9.hQjZW04DYuHyinDhBfWSqApAQi2d7WllTD4YXG4-qik",
       "domain": "hse-staging.transtrack.id",
       "path": "/",
-      "expires": 1765254713.953455,
+      "expires": 1765262981.890776,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
