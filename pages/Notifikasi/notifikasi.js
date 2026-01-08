@@ -17,13 +17,10 @@ export class notifikasi {
         const isMatch = Object.values(this.notifData).some(expected =>
             actualText.includes(expected)
         );
-
-        if(isMatch){
-            console.log(`Muncul pesan notifikasi "${actualText}`);
-        }
         expect(
             isMatch,
             `Teks notifikasi "${actualText}" tidak sesuai dengan data notifikasi yang terdaftar`
         ).toBeTruthy();
+        console.log(`Muncul pesan notifikasi: "${actualText}"`);
     }
 }

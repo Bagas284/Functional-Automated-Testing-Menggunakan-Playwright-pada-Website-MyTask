@@ -13,6 +13,7 @@ import { defineConfig, devices } from '@playwright/test';
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
+  globalSetup: './global-setup.js',
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -35,20 +36,23 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
+    // {
+    //   name: 'chromium',
+    //   use: { 
+    //     ...devices['Desktop Chrome'],
+    //     viewport: { width: 1366, height: 850 }
+    //   },
+    // },
 
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
+    // {
+    //   name: 'firefox',
+    //   use: { ...devices['Desktop Firefox'] },
+    // },
 
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] },
+    // },
 
     /* Test against mobile viewports. */
     // {
@@ -61,10 +65,12 @@ export default defineConfig({
     // },
 
     /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
+    {
+      name: 'Microsoft Edge',
+      use: { 
+        ...devices['Desktop Edge'],
+        channel: 'msedge' }
+    },
     // {
     //   name: 'Google Chrome',
     //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },

@@ -12,6 +12,6 @@ export class navigateUrl {
 
     async checkUrl(url) {
         await expect(this.page).toHaveURL(url);
-        console.log('User berada dan diarahkan di halaman: ', url)
+        console.log('User berada di halaman: ', url)
     }
 }

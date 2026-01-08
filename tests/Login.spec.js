@@ -15,8 +15,8 @@ test.describe('Login', () => {
     })
 
     test('Login dengan Akun Terdaftar', async () => {
-        await login.usernameInput('Bagas@transtrack.id');
-        await login.passwordInput('Password12@');
+        await login.usernameInput('bagas@transtrack.id');
+        await login.passwordInput('Password123@');
         await login.buttonLogin();
 
         await url.checkUrl('https://mytask-staging.transtrack.id/dashboard');
