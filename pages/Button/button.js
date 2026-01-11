@@ -29,4 +29,16 @@ export class button {
             console.log(`   ↳ Reason: ${error.message}`);
         }
     }
+
+    async moreOption(fitur, button){
+        try{
+            const role = this.page.getByRole('Row', { name: fitur});
+            await role.locator('#btnDropdownAction').click();
+            await this.page.getByRole('paragraph').filter({ hasText: button }).click();
+            console.log(`✅ [SUCCESS] Tombol "${button}" muncul dan berhasil diklik`)
+        } catch(error) {
+            console.log(`❌ [FAILED] Data "${fitur}" tidak ditemukan`);
+            console.log(`   ↳ Reason: ${error.message}`);
+        }
+    }
 }
