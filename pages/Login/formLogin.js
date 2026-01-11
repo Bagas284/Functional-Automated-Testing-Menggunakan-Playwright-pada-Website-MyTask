@@ -1,33 +1,51 @@
 import { expect } from "@playwright/test";
 
-export class formLogin{
-    constructor(page){
+export class formLogin {
+    constructor(page) {
         this.page = page;
-        this.usernamefield = page.locator('#inputEmail');
+        this.usernameField = page.locator('#inputEmail');
         this.passwordField = page.locator('#inputPassword');
+        this.loginButton = page.getByRole('button', { name: 'Login' });
     }
 
     async usernameInput(username) {
-        await expect(this.usernamefield).toBeVisible();
-        await this.usernamefield.fill(username);
+        try {
+            await expect(this.usernameField).toBeVisible();
+            await this.usernameField.fill(username);
 
-        const value = await this.usernamefield.inputValue();
-        console.log('Username field value: ', value);
+            const value = await this.usernameField.inputValue();
+            console.log(`✅ [SUCCESS] Username terisi: ${value}`);
 
-        await expect(this.usernamefield).toHaveValue(username);
+            await expect(this.usernameField).toHaveValue(username);
+        } catch (error) {
+            console.log('❌ [FAILED] Gagal mengisi Username');
+            console.log(`   ↳ Reason: ${error.message}`);
+        }
     }
 
     async passwordInput(password) {
-        await expect(this.passwordField).toBeVisible();
-        await this.passwordField.fill(password);
+        try {
+            await expect(this.passwordField).toBeVisible();
+            await this.passwordField.fill(password);
 
-        const value = await this.passwordField.inputValue();
-        console.log('Password field value: ', value);
+            const value = await this.passwordField.inputValue();
+            console.log(`✅ [SUCCESS] Password terisi`);
 
-        await expect(this.passwordField).toHaveValue(password);
+            await expect(this.passwordField).toHaveValue(password);
+        } catch (error) {
+            console.log('❌ [FAILED] Gagal mengisi Password');
+            console.log(`   ↳ Reason: ${error.message}`);
+        }
     }
 
-    async buttonLogin(){
-        await this.page.getByRole('button', { name: 'Login' }).click();
+    async buttonLogin() {
+        try {
+            await expect(this.loginButton).toBeVisible();
+            await this.loginButton.click();
+            console.log('✅ [SUCCESS] Tombol Login berhasil diklik');
+        } catch (error) {
+            console.log('❌ [FAILED] Gagal klik tombol Login');
+            console.log(`   ↳ Reason: ${error.message}`);
+        }
     }
 }

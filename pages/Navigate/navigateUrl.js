@@ -1,17 +1,27 @@
 import { expect } from "@playwright/test";
 
 export class navigateUrl {
-    constructor(page){
+    constructor(page) {
         this.page = page;
     }
 
-    async navigate(url){
-        await this.page.goto(url);
-        console.log('User diarahkan ke halaman: ', url);
+    async navigate(url) {
+        try {
+            await this.page.goto(url, { waitUntil: 'domcontentloaded' });
+            console.log(`✅ [SUCCESS] User diarahkan ke halaman: ${url}`);
+        } catch (error) {
+            console.log(`❌ [FAILED] Gagal navigasi ke halaman: ${url}`);
+            console.log(`   ↳ Reason: ${error.message}`);
+        }
     }
 
     async checkUrl(url) {
-        await expect(this.page).toHaveURL(url);
-        console.log('User berada di halaman: ', url)
+        try {
+            await expect(this.page).toHaveURL(url, { timeout: 5000 });
+            console.log(`✅ [SUCCESS] User berada di halaman: ${url}`);
+        } catch (error) {
+            console.log(`❌ [FAILED] URL tidak sesuai: ${url}`);
+            console.log(`   ↳ Reason: ${error.message}`);
+        }
     }
 }

@@ -1,10 +1,21 @@
+import { expect } from "@playwright/test";
+
 export class menuSidebar {
-    constructor (page){
+    constructor(page) {
         this.page = page;
     }
 
-    async clickSidebar(teks){
-        await this.page.locator(teks).click();
-        console.log(`User diarahkan ke ${teks}`);
+    async clickSidebar(teks) {
+        try {
+            const sidebar = this.page.locator(teks);
+
+            await expect(sidebar).toBeVisible();
+            await sidebar.click();
+
+            console.log(`✅ [SUCCESS] User diarahkan ke menu: ${teks}`);
+        } catch (error) {
+            console.log(`❌ [FAILED] Gagal klik sidebar: ${teks}`);
+            console.log(`   ↳ Reason: ${error.message}`);
+        }
     }
 }

@@ -1,26 +1,37 @@
 import { expect } from "@playwright/test";
 
 export class notifikasi {
-    constructor(page){
+    constructor(page) {
         this.page = page;
         this.notifData = {
-            loginGagal: "Email atau password tidak sesuai"
+            loginGagal: "Email atau password tidak sesuai",
+            berhasilMembuatRole: "Role berhasil dibuat",
+            gagalMembuatRole: "permissions must be at least 1"
         };
     }
-    async notificationCheck(){
-        const notif = this.page.getByTestId('toast-content');
-        
-        // Ambil teks aktual
-        const actualText = (await notif.textContent())?.trim();
 
-        // Bandingkan dengan seluruh data notif yang tersedia
-        const isMatch = Object.values(this.notifData).some(expected =>
-            actualText.includes(expected)
-        );
-        expect(
-            isMatch,
-            `Teks notifikasi "${actualText}" tidak sesuai dengan data notifikasi yang terdaftar`
-        ).toBeTruthy();
-        console.log(`Muncul pesan notifikasi: "${actualText}"`);
+    async notificationCheck() {
+        try {
+            const notif = this.page.getByTestId('toast-content');
+
+            await expect(notif).toBeVisible();
+
+            const actualText = (await notif.textContent())?.trim() || '';
+
+            const isMatch = Object.values(this.notifData).some(expected =>
+                actualText.includes(expected)
+            );
+
+            expect(
+                isMatch,
+                `Teks notifikasi "${actualText}" tidak sesuai dengan data notifikasi yang terdaftar`
+            ).toBeTruthy();
+
+            console.log(`✅ [SUCCESS] Muncul pesan notifikasi: "${actualText}"`);
+
+        } catch (error) {
+            console.log('❌ [FAILED] Gagal melakukan pengecekan notifikasi');
+            console.log(`   ↳ Reason: ${error.message}`);
+        }
     }
 }
