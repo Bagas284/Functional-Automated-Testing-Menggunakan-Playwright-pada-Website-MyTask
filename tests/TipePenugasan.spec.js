@@ -59,4 +59,13 @@ test.describe('Manajemen Role', () => {
                 await notif.notificationCheck();
             })
         })
+
+        test.describe('Tipe Penugasan - Search', () => {
+            test('Search Tipe Penugasan Tidak Terdata', async ({ page }) => {
+                await runSearchTest(page, 2, "Tipe B");
+            })
+            test('Search Tipe Penugasan Terdata', async ({ page }) => {
+                await runSearchTest(page, 2, "Tipe A");
+            })
+        })
 })
