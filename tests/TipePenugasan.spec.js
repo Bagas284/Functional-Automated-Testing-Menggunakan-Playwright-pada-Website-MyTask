@@ -14,6 +14,10 @@ test.describe('Manajemen Role', () => {
     const kode = 'T01';
     const informasi = 'Informasi A';
 
+    const namaTipeTugasBaru = 'Tipe B';
+    const kodeBaru = 'T02';
+    const informasiBaru = 'Informasi B';
+
     const runSearchTest = async (page, column, keyword) => {
         const inputSearch = new search(page, column);
         await inputSearch.search(keyword);
@@ -49,7 +53,7 @@ test.describe('Manajemen Role', () => {
                 await notif.notificationCheck();
                 await runSearchTest(page, 2, namaTipeTugas);
             })
-            test('Tambah Tipe Penugasan Dengan Mengosongkan Field', async ({ page }) => {
+            test('Tambah Tipe Penugasan Dengan Mengosongkan Field', async () => {
                 await inputForm.formInput('Nama Tipe Penugasan', '');
                 await inputForm.formInput('Kode Tipe Penugasan', '');
                 await inputForm.formInput('Informasi', informasi);
@@ -66,6 +70,31 @@ test.describe('Manajemen Role', () => {
             })
             test('Search Tipe Penugasan Terdata', async ({ page }) => {
                 await runSearchTest(page, 2, "Tipe A");
+            })
+        })
+
+        test.describe('Tipe Penugasan - Update', () => {
+            test.beforeEach(async ({ page }) => {
+                await runSearchTest(page, 2, namaTipeTugas);
+                await tombol.moreOption(namaTipeTugas, 'Update');
+                await page.waitForTimeout(1000);
+            })
+
+            test('Ubah Tipe Penugasan dengan Mengosongkan Field', async () => {
+                await inputForm.formInput('Nama Tipe Penugasan', '');
+                await inputForm.formInput('Kode Tipe Penugasan', '');
+                await inputForm.formInput('Informasi', '');
+                await tombol.checkAndClick('Rubah Tipe Tugas');
+                await notif.notificationCheck();
+            })
+
+            test('Ubah Tipe Penugasan dengan Mengisi Semua Field', async ({page}) => {
+                await inputForm.formInput('Nama Tipe Penugasan', namaTipeTugasBaru);
+                await inputForm.formInput('Kode Tipe Penugasan', kodeBaru);
+                await inputForm.formInput('Informasi', informasiBaru);
+                await tombol.checkAndClick('Rubah Tipe Tugas');
+                await notif.notificationCheck();
+                await runSearchTest(page, 2, namaTipeTugasBaru);
             })
         })
 })
