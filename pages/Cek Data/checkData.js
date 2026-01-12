@@ -36,7 +36,7 @@ export class checkData {
     }
 
     async detailCheckData(inputTeks) {
-        await this.page.waitForTimeout(1200);
+        await this.page.waitForTimeout(2000);
         const teks = await this.page.innerText('body');
         const expectedTeks =
             inputTeks?.trim() === "" || inputTeks == null ? "-" : inputTeks;

@@ -11,6 +11,9 @@ export class notifikasi {
             "Role berhasil dihapus",
             "this role has user, please update user role first",
             "Pengguna berhasil dipindahkan ke role yang dituju",
+            "Success create task type",
+            "Task title field is required",
+            "Type identity field is required",
         ];
     }
 
