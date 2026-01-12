@@ -74,4 +74,36 @@ export class checkboxRole {
             }
         }
     }
+
+    async uncheckRole({feature = []} = {}){
+        if (feature.length === 0) {
+            console.log('⚠️ [EMPTY] Feature kosong');
+        } else {
+            for (const roleName of feature) {
+                let checkbox;
+
+                // Select All (Fitur)
+                if (roleName === 'Fitur') {
+                    checkbox = this.page
+                        .getByRole('columnheader', { name: roleName })
+                        .getByRole('checkbox');
+                } else {
+                    // Select per nama fitur
+                    checkbox = this.page
+                        .getByRole('cell', { name: roleName })
+                        .getByRole('checkbox');
+                }
+
+                await expect(
+                    checkbox,
+                    `❌ [FAILED] Checkbox '${roleName}' tidak ditemukan`
+                ).toBeVisible();
+
+                await checkbox.uncheck();
+                await expect(checkbox).not.toBeChecked();
+
+                console.log(`✅ [SUCCESS] Checkbox '${roleName}' berhasil diupdate dan tidak tercentang`);
+            }
+        }
+    }
 }

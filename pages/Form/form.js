@@ -5,7 +5,7 @@ export class form {
         this.page = page;
     }
 
-    async formInput(textArea, teks = null) {
+    async formInput(textArea, teks) {
         let inputForm;
 
         switch (textArea) {
@@ -22,13 +22,13 @@ export class form {
         }
 
         await expect(inputForm).toBeVisible();
-        const value = await inputForm.inputValue();
+        await inputForm.fill(teks);
 
         if(!teks){
             console.log(`⚠️ [EMPTY] Field "${textArea}" kosong`);
         } else{
-            await inputForm.fill(teks);
             await expect(inputForm).toHaveValue(teks);
+            const value = await inputForm.inputValue();
             console.log(`✅ [SUCCESS] Field "${textArea}" terisi: ${value}`);
         }
     }

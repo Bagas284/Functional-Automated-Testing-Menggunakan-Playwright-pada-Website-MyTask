@@ -3,35 +3,46 @@ import { expect } from "@playwright/test";
 export class notifikasi {
     constructor(page) {
         this.page = page;
-        this.notifData = {
-            loginGagal: "Email atau password tidak sesuai",
-            berhasilMembuatRole: "Role berhasil dibuat",
-            gagalMembuatRole: "permissions must be at least 1"
-        };
+        this.notifData = [
+            "Email atau password tidak sesuai",
+            "Role berhasil dibuat",
+            "Role berhasil diubah",
+            "permissions must be at least 1",
+            "Role berhasil dihapus",
+            "this role has user, please update user role first",
+            "Pengguna berhasil dipindahkan ke role yang dituju",
+        ];
     }
 
     async notificationCheck() {
         try {
-            const notif = this.page.getByTestId('toast-content');
+            const notifs = this.page.getByTestId('toast-content');
 
-            await expect(notif).toBeVisible();
+            // Pastikan minimal 1 notifikasi muncul
+            await expect(notifs.first()).toBeVisible();
 
-            const actualText = (await notif.textContent())?.trim() || '';
+            const notifCount = await notifs.count();
 
-            const isMatch = Object.values(this.notifData).some(expected =>
-                actualText.includes(expected)
-            );
+            for (let i = 0; i < notifCount; i++) {
+                const notif = notifs.nth(i);
+                const actualText = (await notif.textContent())?.trim() || "";
 
-            expect(
-                isMatch,
-                `Teks notifikasi "${actualText}" tidak sesuai dengan data notifikasi yang terdaftar`
-            ).toBeTruthy();
+                const isMatch = this.notifData.some(expected =>
+                    actualText.includes(expected)
+                );
 
-            console.log(`✅ [SUCCESS] Muncul pesan notifikasi: "${actualText}"`);
+                expect(
+                    isMatch,
+                    `Teks notifikasi "${actualText}" tidak terdaftar`
+                ).toBeTruthy();
+
+                console.log(`✅ [SUCCESS] Notifikasi valid: "${actualText}"`);
+            }
 
         } catch (error) {
             console.log('❌ [FAILED] Gagal melakukan pengecekan notifikasi');
             console.log(`   ↳ Reason: ${error.message}`);
+            throw error;
         }
     }
 }

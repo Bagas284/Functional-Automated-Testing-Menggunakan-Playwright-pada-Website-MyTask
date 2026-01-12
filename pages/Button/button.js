@@ -37,7 +37,7 @@ export class button {
             await this.page.getByRole('paragraph').filter({ hasText: button }).click();
             console.log(`✅ [SUCCESS] Tombol "${button}" muncul dan berhasil diklik`)
         } catch(error) {
-            console.log(`❌ [FAILED] Data "${fitur}" tidak ditemukan`);
+            console.log(`❌ [FAILED] Tidak dapat melakukan proses "${button}"`);
             console.log(`   ↳ Reason: ${error.message}`);
         }
     }
