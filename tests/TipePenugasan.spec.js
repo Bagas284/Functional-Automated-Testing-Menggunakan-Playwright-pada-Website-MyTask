@@ -5,10 +5,11 @@ import { button } from "../pages/Button/button";
 import { form } from "../pages/Form/form";
 import { notifikasi } from "../pages/Notifikasi/notifikasi";
 import { search } from "../pages/Search/search";
+import { popup } from "../pages/Notifikasi/popup";
 
 test.use({ storageState: 'user.json' });
 test.describe('Manajemen Role', () => {
-    let url, sidebar, tombol, inputForm, notif;
+    let url, sidebar, tombol, inputForm, notif, havePopup;
 
     const namaTipeTugas = 'Tipe A';
     const kode = 'T01';
@@ -29,6 +30,7 @@ test.describe('Manajemen Role', () => {
             tombol = new button(page);
             inputForm = new form(page);
             notif = new notifikasi(page);
+            havePopup = new popup(page);
 
             await url.navigate('https://mytask-staging.transtrack.id/dashboard');
             await url.checkUrl('https://mytask-staging.transtrack.id/dashboard')
@@ -93,6 +95,25 @@ test.describe('Manajemen Role', () => {
                 await inputForm.formInput('Kode Tipe Penugasan', kodeBaru);
                 await inputForm.formInput('Informasi', informasiBaru);
                 await tombol.checkAndClick('Rubah Tipe Tugas');
+                await notif.notificationCheck();
+                await runSearchTest(page, 2, namaTipeTugasBaru);
+            })
+        })
+
+        test.describe('Tipe Penugasan - Delete', () => {
+            test.beforeEach(async ({ page }) => {
+                await runSearchTest(page, 2, namaTipeTugasBaru);
+            })
+            test('Batal Delete Tipe Penugasan', async ({page}) => {
+                await tombol.moreOption(namaTipeTugasBaru, 'Delete');
+                await havePopup.popupDelete('Tidak, Kembali');
+                await runSearchTest(page, 2, namaTipeTugasBaru);
+            })
+
+            test('Delete Tipe Penugasan', async ({page}) => {
+                await tombol.moreOption(namaTipeTugasBaru, 'Delete');
+                await havePopup.popupDelete('Konfirmasi');
+                //Cek
                 await notif.notificationCheck();
                 await runSearchTest(page, 2, namaTipeTugasBaru);
             })

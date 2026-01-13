@@ -9,14 +9,20 @@ export class popup {
         this.popupWarning = page.locator('#modal-warning');
         this.popupPidahUser = page.locator('#modal-transfer-users');
         this.popupSuksesPindah = page.locator('#modal-success');
-        //Button
+        //Button Role
         this.buttonBatal = page.locator('#modal-confirm-delete').getByText('Batal');
         this.buttonHapus = page.locator('button').filter({ hasText: /^Ya$/ });
+
         this.buttonPindahUser = page.locator('button').getByText('Ya, ganti');
         this.buttonBatalPindahUser = page.locator('#modal-warning').getByText('Batal');
+
         this.batalPindahUser = page.locator('#modal-transfer-users').getByText('Batal');
         this.confirmPindahUser = page.locator('button').filter({ hasText: 'Pindahkan' });
+
         this.buttonLanjutkan = page.locator('button').filter({ hasText: 'Lanjutkan' });
+        //Button Tipe Penugasan
+        this.bHapusTipeTugas = page.locator('button').filter({ hasText: 'Konfirmasi' });
+        this.bBatalHapusTipeTugas = page.locator('#modal-confirm-delete button').filter({ hasText: 'Tidak, Kembali' });
 
         this.notif = new notifikasi(page);
     }
@@ -25,15 +31,35 @@ export class popup {
         await expect(this.havePopupConfirmDelete).toBeVisible();
         console.log('✅ [SUCCESS] Muncul popup delete');
 
-        if (button === 'Batal') {
-            await this.buttonBatal.click();
-            console.log(`✅ [SUCCESS] Klik tombol ${button} dan role tidak terhapus`);
-        } else if (button === 'Ya') {
-            await this.buttonHapus.click();
-            console.log(`✅ [SUCCESS] Klik tombol ${button} dan role terhapus`);
-        } else {
+        const actions = {
+            //Role
+            'Batal': {
+                locator: this.buttonBatal,
+                message: 'role tidak terhapus',
+            },
+            'Ya': {
+                locator: this.buttonHapus,
+                message: 'role terhapus',
+            },
+            //Tipe Tugas
+            'Konfirmasi': {
+                locator: this.bHapusTipeTugas,
+                message: 'tipe tugas terhapus',
+            },
+            'Tidak, Kembali': {
+                locator: this.bBatalHapusTipeTugas,
+                message: 'tipe tugas batal hapus',
+            }
+        };
+
+        const action = actions[button];
+        if (!action) {
             throw new Error(`❌ [FAILED] Button tidak dikenali: ${button}`);
         }
+
+        await action.locator.click();
+        console.log(`✅ [SUCCESS] Klik tombol "${button}" dan ${action.message}`);
+
         await expect(this.havePopupConfirmDelete).toBeHidden();
     }
 

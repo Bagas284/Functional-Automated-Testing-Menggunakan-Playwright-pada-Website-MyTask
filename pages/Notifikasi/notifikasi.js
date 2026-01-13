@@ -16,6 +16,7 @@ export class notifikasi {
             "Type identity field is required",
             "Type already exists",
             "Success update task type",
+            "Success delete task type",
         ];
     }
 
