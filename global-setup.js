@@ -1,5 +1,5 @@
 import { chromium} from '@playwright/test';
-import { formLogin } from './pages/login/formLogin';
+import { formLogin } from './pages/Login/formLogin';
 import { navigateUrl } from './pages/Navigate/navigateUrl';
 
 async function loginAndSave(context, page, username, password, outputFile) {

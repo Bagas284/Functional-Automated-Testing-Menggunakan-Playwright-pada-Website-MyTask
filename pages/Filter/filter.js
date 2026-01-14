@@ -4,6 +4,7 @@ import { search } from "../Search/search";
 export class filter {
     constructor(page) {
         this.page = page;
+        this.inputDateRange = page.locator('#inputFilterDateRange');
         //Filter
         this.buttonFilter = page.locator('#btnDropdownFilter');
         this.dropdownFilter = page.locator('#dropdownFilter');
@@ -73,5 +74,113 @@ export class filter {
 
         await this.page.waitForTimeout(1000);
         await this.runFIlterTest(2);
+    }
+
+    async filterDateRange(tahunStart, bulanStart, tanggalStart, tahunEnd, bulanEnd, tanggalEnd) {
+        try {
+            await this.inputDateRange.click();
+
+            await expect(this.page.getByRole('grid', { name: 'Calendar wrapper' })).toBeVisible();
+
+            console.log('✅ [SUCCESS] Kalender date range terbuka');
+
+            await this.tanggalAwal(tahunStart, bulanStart, tanggalStart);
+            await this.tanggalAkhir(tahunEnd, bulanEnd, tanggalEnd);
+
+            await this.page.getByRole('button', { name: 'Confirm' }).click();
+            console.log(
+                `✅ [SUCCESS] Filter date range berhasil: ${tanggalStart} ${bulanStart} ${tahunStart} → ${tanggalEnd} ${bulanEnd} ${tahunEnd}`
+            );
+        } catch (error) {
+            console.error(`❌ [FAILED] Filter date range gagal`,error.message);
+            throw error;
+        }
+        
+    }
+
+    async getCurrentMonthYear() {
+        const monthBtn = this.page.getByRole('button', { name: 'Open months overlay' });
+        const yearBtn  = this.page.getByRole('button', { name: 'Open years overlay' });
+
+        const bulanSekarang = (await monthBtn.innerText()).trim();
+        const tahunSekarang = (await yearBtn.innerText()).trim();
+
+        return { bulanSekarang, tahunSekarang, monthBtn, yearBtn };
+    }
+
+    async tanggalAwal(tahun, bulan, tanggal) {
+        try {
+            const { bulanSekarang, tahunSekarang, monthBtn, yearBtn } =
+            await this.getCurrentMonthYear();
+
+            const actions = [
+                { current: tahunSekarang, value: tahun, btn: yearBtn },
+                { current: bulanSekarang, value: bulan, btn: monthBtn },
+            ];
+
+            for (const a of actions) {
+                if (a.value !== a.current) {
+                    await a.btn.click();
+                    await this.page
+                        .getByLabel('Filters')
+                        .getByText(a.value, { exact: true })
+                        .click();
+                }
+            }
+
+            await this.page
+                .getByLabel('Filters')
+                .getByText(tanggal, { exact: true })
+                .first()
+                .click();
+
+            console.log(`✅ [SUCCESS] Tanggal awal dipilih: ${tanggal} ${bulan} ${tahun}`);
+        } catch (error) {
+            console.error(
+                `❌ [FAILED] Gagal memilih tanggal awal: ${tanggal} ${bulan} ${tahun}`,
+                error.message
+            );
+            throw error;
+        }
+    }
+
+    async tanggalAkhir(tahun, bulan, tanggal) {
+        try {
+            const { bulanSekarang, tahunSekarang, monthBtn, yearBtn } =
+                await this.getCurrentMonthYear();
+
+            const actions = [
+                { current: tahunSekarang, value: tahun, btn: yearBtn },
+                { current: bulanSekarang, value: bulan, btn: monthBtn },
+            ];
+
+            for (const a of actions) {
+                if (a.value !== a.current) {
+                    await a.btn.click();
+                    await this.page
+                        .getByLabel('Filters')
+                        .getByText(a.value, { exact: true })
+                        .click();
+
+                    console.log(`🔁 [INFO] Ganti ke ${a.value}`);
+                }
+            }
+
+            await this.page
+                .getByLabel('Filters')
+                .getByText(tanggal, { exact: true })
+                .first()
+                .click();
+
+            console.log(
+                `✅ [SUCCESS] Tanggal akhir dipilih: ${tanggal} ${bulan} ${tahun}`
+            );
+        } catch (error) {
+            console.error(
+                `❌ [FAILED] Gagal memilih tanggal akhir: ${tanggal} ${bulan} ${tahun}`,
+                error.message
+            );
+            throw error;
+        }
     }
 }

@@ -42,5 +42,15 @@ test.describe('Manajemen Role', () => {
                 await tombol.checkAndClick('Terapkan Filter');
                 await page.mouse.click(50, 50);
             })
+
+            test('Date Range', async ({ page }) => {
+                await sortir.filterDateRange(
+                    '2025', 'Dec', '17',
+                    '2025', 'Dec', '20'
+                );
+                await tombol.checkAndClick('Terapkan Filter');
+                await page.mouse.click(50, 50);
+                await sortir.runFIlterTest(2);
+            })
         })
 })
