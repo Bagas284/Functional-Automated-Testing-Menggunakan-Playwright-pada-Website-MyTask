@@ -3,10 +3,15 @@ import { navigateUrl } from "../pages/Navigate/navigateUrl";
 import { menuSidebar } from "../pages/Navigate/menuSidebar";
 import { filter } from "../pages/Filter/filter";
 import { button } from "../pages/Button/button";
+import { search } from "../pages/Search/search";
 
 test.use({ storageState: 'user.json' });
 test.describe('Manajemen Role', () => {
     let url, sidebar, sortir, tombol;
+    const runSearchTest = async (page, column, keyword) => {
+        const inputSearch = new search(page, column);
+        await inputSearch.search(keyword);
+    }
 
         test.beforeEach(async ({ page }) => {
             url = new navigateUrl(page);
@@ -51,6 +56,19 @@ test.describe('Manajemen Role', () => {
                 await tombol.checkAndClick('Terapkan Filter');
                 await page.mouse.click(50, 50);
                 await sortir.runFIlterTest(2);
+            })
+        })
+
+        test.describe('Laporan Aktifitas - Search', () => {
+            test.beforeEach(async () => {
+                await sortir.filterDropdown('Kategori', ''); 
+            })
+            test('Search Karyawan Terdata', async ({ page }) => {
+                await runSearchTest(page, 2, "Mobile");
+            })
+
+            test('Search Karyawan Tidak Terdata', async ({ page }) => {
+                await runSearchTest(page, 2, "Bagas");
             })
         })
 })
