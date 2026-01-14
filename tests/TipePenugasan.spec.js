@@ -35,7 +35,7 @@ test.describe('Manajemen Role', () => {
             await url.navigate('https://mytask-staging.transtrack.id/dashboard');
             await url.checkUrl('https://mytask-staging.transtrack.id/dashboard')
 
-            //Klik Menu Role
+            //Klik Menu Tipe Penugasan
             await sidebar.clickSidebar('#menuTaskType', 0);
             await url.checkUrl('https://mytask-staging.transtrack.id/task-types');
         })
