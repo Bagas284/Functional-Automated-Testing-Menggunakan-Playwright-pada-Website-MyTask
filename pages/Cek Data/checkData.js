@@ -82,4 +82,62 @@ export class checkData {
             }
         }
     }
+
+    async cekFilePendukug(tipeFile, indek) {
+        try {
+            const file = this.page.getByRole('img', { name: tipeFile });
+            await this.page.waitForTimeout(1000);
+
+            const totalFile = await file.count();
+            const indeks = indek - 1;
+
+            if (totalFile === 0) {
+                console.log(`⚠️ [EMPTY] Tidak ada gambar dengan nama "${tipeFile}"`);
+                return;
+            }
+
+            console.log(`✅ [SUCCESS] Muncul ${totalFile} gambar berupa "${tipeFile}"`);
+
+            await expect(file.nth(indeks)).toBeVisible();
+
+            let newTab;
+            try {
+                [newTab] = await Promise.all([
+                    this.page.waitForEvent('popup'),
+                    file.nth(indeks).click()
+                ]);
+
+                console.log(
+                    `✅ [SUCCESS] Klik gambar "${tipeFile}" ke-${indek} membuka tab baru`
+                );
+
+            } catch (popupError) {
+                console.log(
+                    `❌ [FAILED] Klik gambar "${tipeFile}" ke-${indek} TIDAK membuka tab baru`
+                );
+                throw popupError;
+            }
+
+            try {
+                await newTab.waitForLoadState('domcontentloaded');
+                await expect(newTab).toHaveURL(/\.jpg|\.png|\.jpeg\.pdf/);
+
+                console.log(
+                    `✅ [SUCCESS] Tab baru terbuka dengan URL gambar valid`
+                );
+
+            } catch (tabError) {
+                console.log(
+                    `❌ [FAILED] Tab baru terbuka tapi URL bukan gambar`
+                );
+                console.error(tabError.message);
+            }
+
+        } catch (error) {
+            console.log(
+                `❌ [ERROR] Gagal cek file pendukung "${tipeFile}"`
+            );
+            console.error(error.message);
+        }
+    }
 }

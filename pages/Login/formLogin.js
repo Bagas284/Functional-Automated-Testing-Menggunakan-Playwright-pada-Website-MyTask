@@ -29,7 +29,7 @@ export class formLogin {
             await this.passwordField.fill(password);
 
             const value = await this.passwordField.inputValue();
-            console.log(`✅ [SUCCESS] Password terisi`);
+            console.log(`✅ [SUCCESS] Password terisi: ${value}`);
 
             await expect(this.passwordField).toHaveValue(password);
         } catch (error) {
