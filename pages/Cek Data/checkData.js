@@ -3,7 +3,7 @@ import { expect } from "@playwright/test";
 export class checkData {
     constructor(page, columnIndex = 0) {
         this.page = page;
-        this.rows = page.locator('table tbody tr');
+        this.rows = page.locator('table tbody tr:not(:has(img))');
         this.columnIndex = columnIndex;
     }
 
