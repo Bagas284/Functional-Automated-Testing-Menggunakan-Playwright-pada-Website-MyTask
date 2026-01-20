@@ -60,7 +60,7 @@ test.describe('Manajemen Role', () => {
 
             test('Tambah Role dengan Mengisi Semua Field', async ({ page }) => {
                 await inputForm.formInput('Nama Role', namaRole);
-                await inputForm.formInput('Deskripsi', deskripsi);
+                await inputForm.formInput('Deskripsi User', deskripsi);
                 await role.selectRole({
                     feature: ['Fitur'],
                     // role: ['Dashboard'],
@@ -75,7 +75,7 @@ test.describe('Manajemen Role', () => {
 
             test('Tambah Role dengan Mengosongkan Field', async () => {
                 await inputForm.formInput('Nama Role', namaRole);
-                await inputForm.formInput('Deskripsi', deskripsi);
+                await inputForm.formInput('Deskripsi User', deskripsi);
                 await role.selectRole({
                     feature: []
                 });
@@ -118,7 +118,7 @@ test.describe('Manajemen Role', () => {
 
             test('Manajemen Role - Update dengan Mengisi Semua Field', async ({ page }) => {
                 await inputForm.formInput('Nama Role', namaRoleBaru);
-                await inputForm.formInput('Deskripsi', deskripsiBaru);
+                await inputForm.formInput('Deskripsi User', deskripsiBaru);
                 await role.uncheckRole({
                     feature: ['Fitur']
                 });

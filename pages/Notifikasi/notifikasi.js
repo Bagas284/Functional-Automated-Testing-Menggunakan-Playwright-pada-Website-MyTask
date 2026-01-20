@@ -17,6 +17,9 @@ export class notifikasi {
             "Type already exists",
             "Success update task type",
             "Success delete task type",
+            "Kategori berhasil dibuat",
+            "Judul #1 harus di isi",
+            "Minimal harus ada satu input",
         ];
     }
 

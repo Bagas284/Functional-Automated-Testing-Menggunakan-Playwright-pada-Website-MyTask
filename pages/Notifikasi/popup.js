@@ -9,6 +9,7 @@ export class popup {
         this.popupWarning = page.locator('#modal-warning');
         this.popupPidahUser = page.locator('#modal-transfer-users');
         this.popupSuksesPindah = page.locator('#modal-success');
+        this.popupInputLaporan = page.getByRole('heading', { name: 'Hapus Input Laporan' });
         //Button Role
         this.buttonBatal = page.locator('#modal-confirm-delete').getByText('Batal');
         this.buttonHapus = page.locator('button').filter({ hasText: /^Ya$/ });
@@ -23,6 +24,10 @@ export class popup {
         //Button Tipe Penugasan
         this.bHapusTipeTugas = page.locator('button').filter({ hasText: 'Konfirmasi' });
         this.bBatalHapusTipeTugas = page.locator('#modal-confirm-delete button').filter({ hasText: 'Tidak, Kembali' });
+
+        //Button Input Laporan
+        this.bBatalHapusInput = page.getByRole('button', { name: 'Cancel' });
+        this.bHapusInput = page.getByRole('button', { name: 'Delete' });
 
         this.notif = new notifikasi(page);
     }
@@ -116,5 +121,31 @@ export class popup {
             }
             await expect(this.popupPidahUser).toBeHidden();
         }
+    }
+
+    async popupDeleteInput(button){
+        await expect(this.popupInputLaporan).toBeVisible();
+        console.log('✅ [SUCCESS] Muncul popup delete input laporan');
+
+        const actions = {
+            'Cancel': {
+                locator: this.bBatalHapusInput,
+                message: 'input laporan tidak terhapus',
+            },
+            'Delete': {
+                locator: this.bHapusInput,
+                message: 'input laporan terhapus',
+            },
+        };
+
+        const action = actions[button];
+        if (!action) {
+            throw new Error(`❌ [FAILED] Button tidak dikenali: ${button}`);
+        }
+
+        await action.locator.click();
+        console.log(`✅ [SUCCESS] Klik tombol "${button}" dan ${action.message}`);
+
+        await expect(this.popupInputLaporan).toBeHidden();
     }
 }

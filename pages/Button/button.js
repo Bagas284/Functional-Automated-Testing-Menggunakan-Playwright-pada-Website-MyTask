@@ -41,4 +41,35 @@ export class button {
             console.log(`   ↳ Reason: ${error.message}`);
         }
     }
+
+    async toggleAktif(toggleNames = [], indek) {
+        if (toggleNames.length === 0) {
+            throw new Error(`⚠️ [EMPTY] tidak ada toggle yang aktif`);
+        }
+
+        const toggleMap = {
+            'Wajib Diisi': this.page.locator(
+                `label:has(#toggle-required-${indek})`
+            ),
+            'Unggah Foto': this.page.locator(
+                `label:has(#toggle-photo-${indek})`
+            ),
+            'Keterangan': this.page.locator(
+                `label:has(#toggle-description-${indek})`
+            ),
+        };
+
+        for (const toggle of toggleNames) {
+            const locator = toggleMap[toggle];
+
+            if (!locator) {
+                throw new Error(`❌ [FAILED] Toggle "${toggle}" tidak ditemukan`);
+            }
+
+            await expect(locator).toBeVisible();
+            await locator.click();
+
+            console.log(`✅ [SUCCESS] Toggle "${toggle}" berhasil aktif`);
+        }
+    }
 }
