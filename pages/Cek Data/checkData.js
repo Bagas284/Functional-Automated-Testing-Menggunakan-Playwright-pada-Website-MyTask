@@ -141,7 +141,7 @@ export class checkData {
         }
     }
 
-    async cek(teks = []) {
+    async cekKategoriLaporan(teks = []) {
         for (let i = 0; i < teks.length; i++) {
             const locator = this.page
                 .getByRole('textbox', { name: 'Judul' })

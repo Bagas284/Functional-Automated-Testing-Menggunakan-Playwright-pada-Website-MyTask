@@ -23,6 +23,10 @@ test.describe('Kategori Laporan', () => {
     const file = 'File Pendukung';
     const ttd = 'Tanda Tangan';
 
+    const namaKategoriBaru = 'Alat Berat';
+    const deskripsiBaru = 'Untuk pengecekan kondisi alat berat';
+    const teksPendekBaru = 'Nama Karyawan';
+
     const runSearchTest = async (page, column, keyword) => {
         const inputSearch = new search(page, column);
         await inputSearch.search(keyword);
@@ -153,7 +157,42 @@ test.describe('Kategori Laporan', () => {
             test('Kategori Laporan - Kesesuaian Data', async () => {
                 await detailData.detailCheckData(namaKategori);
                 await detailData.detailCheckData(deskripsi);
-                await detailData.cek([teksPendek, teksPanjang, pilihanTunggal, pilihanBeberapa, lokasi, file, ttd]);
+                await detailData.cekKategoriLaporan([teksPendek, teksPanjang, pilihanTunggal, pilihanBeberapa, lokasi, file, ttd]);
+            })
+        })
+
+        test.describe('Kategori Laporan - Update Kategori', () => {
+            test.beforeEach(async ({ page }) => {
+                await runSearchTest(page, 2, namaKategori);
+                await tombol.moreOption(namaKategori, 'Edit');
+            })
+
+            test('Update dengan Mengosongkan Field', async () => {
+                await inputForm.formInput('Nama Kategori', '');
+                await inputForm.formInput('Deskripsi Kategori', '');
+                await inputForm.formInput('Judul', '', 0);
+                await tombol.checkAndClick('Update');
+                //Cek
+                await errorMessage.textError();
+                await notif.notificationCheck();
+            })
+
+            test('Update dengan Mengisi Semua Field', async ({ page }) => {
+                await inputForm.formInput('Nama Kategori', namaKategoriBaru);
+                await inputForm.formInput('Deskripsi Kategori', deskripsiBaru);
+                await inputForm.tambahInputLaporan(['Teks Pendek']);
+                await inputForm.formInput('Judul', teksPendekBaru, 4);
+                await tombol.toggleAktif(['Wajib Diisi'], 7);
+                await tombol.checkAndClick('Update');
+                //Cek
+                await url.checkUrl('https://mytask-staging.transtrack.id/report-category');
+                await notif.notificationCheck();
+                await runSearchTest(page, 2, namaKategoriBaru);
+                await runSearchTest(page, 2, namaKategoriBaru);
+                await tombol.moreOption(namaKategoriBaru, 'Detail');
+                await detailData.detailCheckData(namaKategoriBaru);
+                await detailData.detailCheckData(deskripsiBaru);
+                await detailData.cekKategoriLaporan([teksPendek, teksPanjang, pilihanTunggal, pilihanBeberapa, lokasi, file, ttd, teksPendekBaru]);
             })
         })
 })

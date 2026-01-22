@@ -20,6 +20,7 @@ export class notifikasi {
             "Kategori berhasil dibuat",
             "Judul #1 harus di isi",
             "Minimal harus ada satu input",
+            "Kategori berhasil diperbarui",
         ];
     }
 
