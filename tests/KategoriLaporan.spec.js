@@ -7,10 +7,11 @@ import { form } from "../pages/Form/form";
 import { notifikasi } from "../pages/Notifikasi/notifikasi";
 import { messageError } from "../pages/Notifikasi/messageError";
 import { popup } from "../pages/Notifikasi/popup";
+import { checkData } from "../pages/Cek Data/checkData";
 
 test.use({ storageState: 'user.json' });
 test.describe('Kategori Laporan', () => {
-    let url, sidebar, tombol, inputForm, notif, errorMessage, havePopup;
+    let url, sidebar, tombol, inputForm, notif, errorMessage, havePopup, detailData;
 
     const namaKategori = 'Inspeksi Alat Berat';
     const deskripsi = 'Untuk inspeksi alat berat';
@@ -35,6 +36,7 @@ test.describe('Kategori Laporan', () => {
             notif = new notifikasi(page);
             errorMessage = new messageError(page);
             havePopup = new popup(page);
+            detailData = new checkData(page)
 
             await url.navigate('https://mytask-staging.transtrack.id/dashboard');
             await url.checkUrl('https://mytask-staging.transtrack.id/dashboard')
@@ -139,6 +141,19 @@ test.describe('Kategori Laporan', () => {
                 await url.checkUrl('https://mytask-staging.transtrack.id/report-category');
                 await notif.notificationCheck();
                 await runSearchTest(page, 2, namaKategori);
+            })
+        })
+
+        test.describe('Kategori Laporan - Detail Kategori', () => {
+            test.beforeEach(async ({ page }) => {
+                await runSearchTest(page, 2, namaKategori);
+                await tombol.moreOption(namaKategori, 'Detail');
+            })
+
+            test('Kategori Laporan - Kesesuaian Data', async () => {
+                await detailData.detailCheckData(namaKategori);
+                await detailData.detailCheckData(deskripsi);
+                await detailData.cek([teksPendek, teksPanjang, pilihanTunggal, pilihanBeberapa, lokasi, file, ttd]);
             })
         })
 })

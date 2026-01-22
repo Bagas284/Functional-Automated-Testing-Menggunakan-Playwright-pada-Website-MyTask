@@ -36,7 +36,7 @@ export class checkData {
     }
 
     async detailCheckData(inputTeks) {
-        await this.page.waitForTimeout(2000);
+        await this.page.waitForTimeout(1000);
         const teks = await this.page.innerText('body');
         const expectedTeks =
             inputTeks?.trim() === "" || inputTeks == null ? "-" : inputTeks;
@@ -138,6 +138,28 @@ export class checkData {
                 `❌ [ERROR] Gagal cek file pendukung "${tipeFile}"`
             );
             console.error(error.message);
+        }
+    }
+
+    async cek(teks = []) {
+        for (let i = 0; i < teks.length; i++) {
+            const locator = this.page
+                .getByRole('textbox', { name: 'Judul' })
+                .nth(i);
+
+            try {
+                await expect(locator).toHaveValue(teks[i]);
+
+                console.log(
+                    `✅ [SUCCESS] Field ke-${i + 1} sesuai. Value: "${teks[i]}"`
+                );
+            } catch (error) {
+                console.error(
+                    `❌ [FAILED] Field ke-${i + 1} TIDAK sesuai.\n` +
+                    `   Expected: "${teks[i]}"`
+                );
+            throw error;
+            }
         }
     }
 }
