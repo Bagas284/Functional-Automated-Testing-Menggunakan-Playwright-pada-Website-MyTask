@@ -195,4 +195,22 @@ test.describe('Kategori Laporan', () => {
                 await detailData.cekKategoriLaporan([teksPendek, teksPanjang, pilihanTunggal, pilihanBeberapa, lokasi, file, ttd, teksPendekBaru]);
             })
         })
+
+        test.describe('Kategori Laporan - Delete Kategori', () => {
+            test.beforeEach(async ({ page }) => {
+                await runSearchTest(page, 2, namaKategoriBaru);
+                await tombol.moreOption(namaKategoriBaru, 'Hapus');
+            })
+
+            test('Cancel Delete', async () => {
+                await havePopup.popupDelete('Tidak, Kembali');
+            })
+
+            test('Konfirmasi Delete', async ({ page }) => {
+                await havePopup.popupDelete('Konfirmasi');
+                //Cek
+                await notif.notificationCheck();
+                await runSearchTest(page, 2, namaKategoriBaru);
+            })
+        })
 })
