@@ -14,6 +14,11 @@ test.describe('Manajemen Role', () => {
         await inputSearch.search(keyword);
     }
 
+    const runFIlterTest = async (page, column) => {
+        const inputSearch = new search(page, column);
+        await inputSearch.checkSearch();
+    }
+
         test.beforeEach(async ({ page }) => {
             url = new navigateUrl(page);
             sidebar = new menuSidebar(page);
@@ -30,11 +35,15 @@ test.describe('Manajemen Role', () => {
         })
 
         test.describe('Laporan Aktifitas - Kategori', () => {
-            test('Select Kategori', async () => {
+            test('Select Kategori', async ({ page }) => {
                 await sortir.filterDropdown('Kategori', 'Inspeksi Hasil Tambang');
+                await page.waitForTimeout(1000);
+                await runFIlterTest(page, 2);
             })
-            test('Empty Kategori', async () => {
+            test('Empty Kategori', async ({ page }) => {
                 await sortir.filterDropdown('Kategori', '');
+                await page.waitForTimeout(1000);
+                await runFIlterTest(page, 2);
             })
         })
 
@@ -48,16 +57,20 @@ test.describe('Manajemen Role', () => {
                 await sortir.filterDropdown('Karyawan', 'Mobile');
                 await tombol.checkAndClick('Terapkan Filter');
                 await page.mouse.click(50, 50);
+                await page.waitForTimeout(1000);
+                await runFIlterTest(page, 2);
             })
 
             test('Date Range', async ({ page }) => {
                 await sortir.filterDateRange(
-                    '2025', 'Dec', '17',
-                    '2025', 'Dec', '20'
+                    'range',
+                    '2025', 'Dec', '16',
+                    '2026', 'Jan', '1'
                 );
                 await tombol.checkAndClick('Terapkan Filter');
                 await page.mouse.click(50, 50);
-                await sortir.runFIlterTest(2);
+                await page.waitForTimeout(1000);
+                await runFIlterTest(page, 2);
             })
         })
 

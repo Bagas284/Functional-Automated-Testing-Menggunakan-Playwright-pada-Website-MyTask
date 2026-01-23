@@ -1,10 +1,12 @@
 import { expect } from "@playwright/test";
-import { search } from "../Search/search";
+import { error } from "node:console";
 
 export class filter {
     constructor(page) {
         this.page = page;
         this.inputDateRange = page.locator('#inputFilterDateRange');
+        this.inputStartDate = page.locator('#inputFilterStartDate');
+        this.inputEndDate = page.locator('#inputFilterEndDate');
         //Filter
         this.buttonFilter = page.locator('#btnDropdownFilter');
         this.dropdownFilter = page.locator('#dropdownFilter');
@@ -14,17 +16,17 @@ export class filter {
         //Karyawan
         this.containerKaryawan = page.locator('#dropdownEmployee');
         this.itemsKaryawan = this.containerKaryawan.locator('li');
+        //Status
+        this.todo = page.locator('#cboxFilterTodo');
+        this.doing = page.locator('#cboxFilterDoing');
+        this.done = page.locator('#cboxFilterDone');
+        this.cancel = page.locator('#cboxFilterCancel');
     }
 
     async filterOption(){
         await this.buttonFilter.click();
         await expect(this.dropdownFilter).toBeVisible();
         console.log('✅ [SUCCESS] Muncul menu filter')
-    }
-
-    async runFIlterTest(column) {
-        const inputSearch = new search(this.page, column);
-        await inputSearch.checkSearch();
     }
 
     async filterDropdown(label, teks) {
@@ -71,31 +73,93 @@ export class filter {
         for (let i = 0; i < totalData; i++) {
             console.log(`Item ${i + 1}: ${await selected.items.nth(i).innerText()}`);
         }
-
-        await this.page.waitForTimeout(1000);
-        await this.runFIlterTest(2);
     }
 
-    async filterDateRange(tahunStart, bulanStart, tanggalStart, tahunEnd, bulanEnd, tanggalEnd) {
+    async filterStatus(label = []){
+        for (const labels of label){
+            switch(labels){
+                case 'Dalam Antrian':
+                    await expect(this.todo).toBeVisible();
+                    await this.todo.click();
+                    await expect(this.todo).toBeChecked();
+                    console.log(`✅ [SUCCESS] Status "${labels}" berhasil dipilih`);
+                break;
+                case 'Dikerjakan':
+                    await expect(this.doing).toBeVisible();
+                    await this.doing.click();
+                    await expect(this.doing).toBeChecked();
+                    console.log(`✅ [SUCCESS] Status "${labels}" berhasil dipilih`);
+                break;
+                case 'Selesai':
+                    await expect(this.done).toBeVisible();
+                    await this.done.click();
+                    await expect(this.done).toBeChecked();
+                    console.log(`✅ [SUCCESS] Status "${labels}" berhasil dipilih`);
+                break;
+                case 'Batal':
+                    await expect(this.cancel).toBeVisible();
+                    await this.cancel.click();
+                    await expect(this.cancel).toBeChecked();
+                    console.log(`✅ [SUCCESS] Status "${labels}" berhasil dipilih`);
+                break;
+                default:
+                    throw new error(`❌ [FAILED] Status ${labels} tidak dikenali`);
+            }
+        }
+    }
+
+    async filterDateRange(
+        mode,
+        tahunStart,
+        bulanStart,
+        tanggalStart,
+        tahunEnd = null,
+        bulanEnd = null,
+        tanggalEnd = null
+    ) {
         try {
-            await this.inputDateRange.click();
+            if (mode === 'range') {
+                await this.inputDateRange.click();
+            } else if (mode === 'start') {
+                await this.inputStartDate.click();
+            } else if (mode === 'end') {
+                await this.inputEndDate.click();
+            } else {
+                throw new Error(`Mode tidak valid: ${mode}`);
+            }
 
-            await expect(this.page.getByRole('grid', { name: 'Calendar wrapper' })).toBeVisible();
+            await this.page.waitForTimeout(500);
+            await expect(
+                this.page.getByRole('grid', { name: 'Calendar wrapper' })
+            ).toBeVisible();
 
-            console.log('✅ [SUCCESS] Kalender date range terbuka');
+            console.log(`✅ [SUCCESS] Kalender terbuka (${mode})`);
 
-            await this.tanggalAwal(tahunStart, bulanStart, tanggalStart);
-            await this.tanggalAkhir(tahunEnd, bulanEnd, tanggalEnd);
+            // 2. Logika pemilihan tanggal
+            if (mode === 'range') {
+                await this.tanggalAwal(tahunStart, bulanStart, tanggalStart);
+                await this.tanggalAkhir(tahunEnd, bulanEnd, tanggalEnd);
 
-            await this.page.getByRole('button', { name: 'Confirm' }).click();
-            console.log(
-                `✅ [SUCCESS] Filter date range berhasil: ${tanggalStart} ${bulanStart} ${tahunStart} → ${tanggalEnd} ${bulanEnd} ${tahunEnd}`
-            );
+                await this.page.getByRole('button', { name: 'Confirm' }).click();
+
+                console.log(
+                    `✅ [SUCCESS] Filter range: ${tanggalStart} ${bulanStart} ${tahunStart} → ${tanggalEnd} ${bulanEnd} ${tahunEnd}`
+                );
+            }
+
+            if (mode === 'start') {
+                await this.tanggalAwal(tahunStart, bulanStart, tanggalStart);
+                await this.page.getByRole('button', { name: 'Confirm' }).click();
+            }
+
+            if (mode === 'end') {
+                await this.tanggalAkhir(tahunStart, bulanStart, tanggalStart);
+                await this.page.getByRole('button', { name: 'Confirm' }).click();
+            }
         } catch (error) {
-            console.error(`❌ [FAILED] Filter date range gagal`,error.message);
+            console.error('❌ [FAILED] Filter tanggal gagal:', error.message);
             throw error;
         }
-        
     }
 
     async getCurrentMonthYear() {
