@@ -22,6 +22,17 @@ export class notifikasi {
             "Minimal harus ada satu input",
             "Kategori berhasil diperbarui",
             "Kategori berhasil dihapus",
+            "Berhasil simpan data lokasi asal",
+            "Berhasil tambah data lokasi tujuan",
+            "Minimal terdapat satu tujuan",
+            "Nama lokasi asal wajib diisi",
+            "Catatan wajib diisi",
+            "Deadline wajib diisi",
+            "Judul tugas wajib diisi",
+            "Tipe pengerjaan tugas wajib diisi",
+            "Tipe task wajib diisi",
+            "Karyawan wajib diisi",
+            "Success creating task",
         ];
     }
 

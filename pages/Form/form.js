@@ -13,6 +13,7 @@ export class form {
         this.bTambah = page.getByRole('button', { name: 'Tambah', exact: true });
     }
 
+    //Field form
     async formInput(textArea, teks, index = null) {
         let inputForm;
 
@@ -41,6 +42,7 @@ export class form {
 
         await expect(inputForm).toBeVisible();
         await inputForm.fill(teks);
+        await expect(inputForm).toHaveValue(teks);
 
         if(!teks){
             console.log(`⚠️ [EMPTY] Field "${textArea}" kosong`);
@@ -51,6 +53,7 @@ export class form {
         }
     }
 
+    //Tambah field daftar input laporan (kategori laporan)
     async tambahInputLaporan(type = []){
         if (type.length === 0){
             throw new Error(`⚠️ [EMPTY] type Input Laporan tidak boleh kosong`);
@@ -71,6 +74,7 @@ export class form {
         }
     }
 
+    //Field pilihan tunggal / beberapa (kategori laporan)
     async inputPilihan(teks = [], button){
         const fieldInput = this.page.getByRole('textbox', { name: 'Masukkan pilihan' });
         const countTeks = teks.filter(item => item.trim() !== "").length;

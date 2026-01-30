@@ -5,6 +5,7 @@ export class checkboxRole {
         this.page = page;
     }
 
+    //Check checkbox
     async selectRole({ feature = [], role = [], action = [] } = {}) {
         if (feature.length === 0) {
             console.log('⚠️ [EMPTY] Feature kosong');
@@ -75,6 +76,7 @@ export class checkboxRole {
         }
     }
 
+    //Uncheck checkbox
     async uncheckRole({feature = []} = {}){
         if (feature.length === 0) {
             console.log('⚠️ [EMPTY] Feature kosong');

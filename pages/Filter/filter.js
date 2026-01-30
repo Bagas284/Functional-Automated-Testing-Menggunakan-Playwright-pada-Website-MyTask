@@ -23,12 +23,14 @@ export class filter {
         this.cancel = page.locator('#cboxFilterCancel');
     }
 
+    //Buka menu filter
     async filterOption(){
         await this.buttonFilter.click();
         await expect(this.dropdownFilter).toBeVisible();
         console.log('✅ [SUCCESS] Muncul menu filter')
     }
 
+    //FIlter dropdown
     async filterDropdown(label, teks) {
         const dropdown = this.page.getByRole('textbox', { name: label });
         await expect(dropdown).toBeVisible();
@@ -75,6 +77,7 @@ export class filter {
         }
     }
 
+    //Filter status (daftar tugas)
     async filterStatus(label = []){
         for (const labels of label){
             switch(labels){
@@ -108,6 +111,7 @@ export class filter {
         }
     }
 
+    //Filter date range
     async filterDateRange(
         mode,
         tahunStart,
@@ -174,8 +178,7 @@ export class filter {
 
     async tanggalAwal(tahun, bulan, tanggal) {
         try {
-            const { bulanSekarang, tahunSekarang, monthBtn, yearBtn } =
-            await this.getCurrentMonthYear();
+            const { bulanSekarang, tahunSekarang, monthBtn, yearBtn } = await this.getCurrentMonthYear();
 
             const actions = [
                 { current: tahunSekarang, value: tahun, btn: yearBtn },

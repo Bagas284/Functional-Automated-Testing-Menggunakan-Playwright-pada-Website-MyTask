@@ -7,6 +7,7 @@ export class checkData {
         this.columnIndex = columnIndex;
     }
 
+    //Cek data search
     async checkSearch() {
         try {
             const rowCount = await this.rows.count();
@@ -35,6 +36,7 @@ export class checkData {
         }
     }
 
+    //Cek detail
     async detailCheckData(inputTeks) {
         await this.page.waitForTimeout(1000);
         const teks = await this.page.innerText('body');
@@ -48,6 +50,7 @@ export class checkData {
         }
     }
 
+    //Cel checkbox
     async dataCheckbox(){
         await this.page.waitForTimeout(500);
         // Ambil semua baris tabel (kecuali header)
@@ -83,6 +86,7 @@ export class checkData {
         }
     }
 
+    //Cek File pendukung
     async cekFilePendukug(tipeFile, indek) {
         try {
             const file = this.page.getByRole('img', { name: tipeFile });
@@ -141,6 +145,7 @@ export class checkData {
         }
     }
 
+    //Cek detail kategori laporan
     async cekKategoriLaporan(teks = []) {
         for (let i = 0; i < teks.length; i++) {
             const locator = this.page
