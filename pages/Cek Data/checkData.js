@@ -36,7 +36,7 @@ export class checkData {
         }
     }
 
-    //Cek detail
+    //Cek detail dalam bentuk teks
     async detailCheckData(inputTeks) {
         await this.page.waitForTimeout(1000);
         const teks = await this.page.innerText('body');
@@ -47,6 +47,26 @@ export class checkData {
             console.log(`✅ [SUCCESS] Data sesuai: teks "${expectedTeks}" ditemukan di halaman.`);
         } else {
             throw new Error(`❌ [FAILED] Data tidak sesuai: teks "${expectedTeks}" TIDAK ditemukan di halaman.`);
+        }
+    }
+
+    //Cek detail dalam bentuk field
+    async detailCheckDataField(nameField, value, options = {}) {
+        const { exact = false } = options;
+
+        try {
+            const locator = this.page.getByRole('textbox', {
+                name: nameField,
+                exact
+            });
+
+            await expect(locator).toBeVisible();
+            await expect(locator).toHaveValue(value);
+
+            console.log(`✅ [SUCCESS] Field "${nameField}" memiliki value "${value}"`);
+        } catch (error) {
+            console.log(`❌ [FAILED] Field "${nameField}" TIDAK memiliki value "${value}"`);
+            throw error;
         }
     }
 
@@ -165,6 +185,19 @@ export class checkData {
                 );
             throw error;
             }
+        }
+    }
+
+    async checkRadioButton(radioButton){
+        try{
+            const locator = this.page.getByRole('radio', {name: radioButton});
+            await expect(locator).toBeVisible();
+
+            await expect(locator).toBeChecked();
+            console.log(`✅ [SUCCESS] Radio button: ${radioButton} dipilih`);
+        } catch(error){
+            console.log(`❌ [FAILED] Radio button: ${radioButton} tidak ditemukan`);
+            throw error;
         }
     }
 }

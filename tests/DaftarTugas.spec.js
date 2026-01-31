@@ -10,10 +10,11 @@ import { selectDate } from "../pages/Form/selectDate";
 import { radioButton } from "../pages/Form/radioButton";
 import { addLocation } from "../pages/Form/addLocation";
 import { notifikasi } from "../pages/Notifikasi/notifikasi";
+import { checkData } from "../pages/Cek Data/checkData";
 
 test.use({ storageState: 'user.json' });
 test.describe('Daftar Tugas', () => {
-    let url, sidebar, sortir, tombol, selectField, inputForm, selectDeadline, tipePengerjaan, tambahLokasi, notif;
+    let url, sidebar, sortir, tombol, selectField, inputForm, selectDeadline, tipePengerjaan, tambahLokasi, notif, detailData;
 
     const formDaftarTugas = {
         tipePenugasan: 'Tipe A',
@@ -23,7 +24,8 @@ test.describe('Daftar Tugas', () => {
         deskripsiPenugasan: 'Memantau alat berat',
         noReferensi: '001',
         lokasiAwal: 'Transtrack Bandung',
-        lokasiTujuan: ['Telkom University', 'Unpad']
+        lokasiTujuan: ['Telkom University', 'Unpad'],
+        radioButton: 'Bebas'
     }
 
     const runSearchTest = async (page, column, keyword) => {
@@ -47,6 +49,7 @@ test.describe('Daftar Tugas', () => {
         tipePengerjaan = new radioButton(page);
         tambahLokasi = new addLocation(page);
         notif = new notifikasi(page);
+        detailData = new checkData(page);
 
         await url.navigate('https://mytask-staging.transtrack.id/dashboard');
         await url.checkUrl('https://mytask-staging.transtrack.id/dashboard')
@@ -140,7 +143,7 @@ test.describe('Daftar Tugas', () => {
             await selectDeadline.tenggatWaktu('2026', 'Feb', '20');
             await inputForm.formInput('Deskripsi Penugasan', formDaftarTugas.deskripsiPenugasan);
             await inputForm.formInput ('No Referensi', formDaftarTugas.noReferensi);
-            await tipePengerjaan.selectRadioButton('Bebas');
+            await tipePengerjaan.selectRadioButton(formDaftarTugas.radioButton);
             // Add lokasi awal
             await tambahLokasi.lokasiAwal(formDaftarTugas.lokasiAwal, 'Simpan');
             // Add lokasi tujuan
@@ -149,6 +152,26 @@ test.describe('Daftar Tugas', () => {
             //Cek
             await notif.notificationCheck();
             await runSearchTest(page, 1, formDaftarTugas.judulPenugasan);
+        })
+    })
+
+    test.describe('Daftar Tugas - Detail Tugas', () => {
+        test('Detail Tugas - Kesesuaian Data ', async ({ page }) => {
+            await runSearchTest(page, 1, formDaftarTugas.judulPenugasan);
+            await tombol.checkAndClick('Detail');
+            await detailData.detailCheckDataField('Tipe Penugasan', formDaftarTugas.tipePenugasan);
+            await detailData.detailCheckDataField('Judul Penugasan', formDaftarTugas.judulPenugasan);
+            await detailData.detailCheckDataField('pilih karyawan', formDaftarTugas.namaKaryawan2);
+            await detailData.detailCheckDataField('Tenggat Waktu', '2026-02-20', {exact: true});
+            await detailData.detailCheckData(formDaftarTugas.lokasiAwal);
+            await detailData.detailCheckData('TransTRACK.ID Bandung, 24, Jalan Emong, Burangrang, Lengkong, Bandung, Jawa Barat, Jawa, 40262, Indonesia');
+            await detailData.detailCheckData('Telkom University');
+            await detailData.detailCheckData('Telkom University, 1, Jalan Sukabirus, Citeureup, Bandung, Jawa Barat, Jawa, 40257, Indonesia');
+            await detailData.detailCheckData('Unpad');
+            await detailData.detailCheckData('Universitas Padjadjaran, Jalan Raya Jatinangor, Bandung, Sumedang, Jawa Barat, Jawa, 45363, Indonesia');
+            await detailData.detailCheckDataField('Deskripsi Penugasan', formDaftarTugas.deskripsiPenugasan);
+            await detailData.detailCheckDataField('No Referensi', formDaftarTugas.noReferensi);
+            await detailData.checkRadioButton(formDaftarTugas.radioButton);
         })
     })
 })
