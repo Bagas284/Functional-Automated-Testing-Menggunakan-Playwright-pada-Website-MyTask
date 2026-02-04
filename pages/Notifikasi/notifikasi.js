@@ -33,6 +33,8 @@ export class notifikasi {
             "Tipe task wajib diisi",
             "Karyawan wajib diisi",
             "Success creating task",
+            "Success",
+            "Berhasil ubah data lokasi tujuan",
         ];
     }
 

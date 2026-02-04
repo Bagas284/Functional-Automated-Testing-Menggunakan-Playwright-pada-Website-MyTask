@@ -136,6 +136,8 @@ export class filter {
             await expect(
                 this.page.getByRole('grid', { name: 'Calendar wrapper' })
             ).toBeVisible();
+            
+            await this.page.evaluate(() => window.scrollBy(0, 500));
 
             console.log(`✅ [SUCCESS] Kalender terbuka (${mode})`);
 

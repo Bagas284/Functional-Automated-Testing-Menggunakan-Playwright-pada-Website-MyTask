@@ -49,7 +49,7 @@ export class selectDate{
                 }
             }
 
-            const x = tanggal - 1;
+            const tanggal2Digit = String(tanggal - 1).padStart(2, '0');
             const mapBulan = {
                 Jan: 1,
                 Feb: 2,
@@ -64,10 +64,9 @@ export class selectDate{
                 Nov: 11,
                 Dec: 12,
             };
-            const bulanAngka = mapBulan[bulan];
-            const bulan2Digit = String(bulanAngka).padStart(2, '0');
+            const bulan2Digit = String(mapBulan[bulan]).padStart(2, '0');
 
-            await this.page.locator(`[id="${tahun}-${bulan2Digit}-${x}"]`).click();
+            await this.page.locator(`[id="${tahun}-${bulan2Digit}-${tanggal2Digit}"]`).click();
             
             console.log(`✅ [SUCCESS] Tanggal deadline dipilih: ${tanggal} ${bulan} ${tahun}`);
         } catch (error) {

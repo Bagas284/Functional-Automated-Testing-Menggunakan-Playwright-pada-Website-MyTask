@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { notifikasi } from "../Notifikasi/notifikasi";
+import { execPath } from "node:process";
 
 export class addLocation{
     constructor(page){
@@ -95,6 +96,71 @@ export class addLocation{
         }
     }
 
+    async editLokasiAwal(alamat, button){
+        try{
+            const bEdit = this.page.locator('span > .mr-4');
+            if(!alamat){
+                console.log(`⚠️ [EMPTY] Alamat kosong`);
+            }
+            await expect(bEdit).toBeVisible();
+            await bEdit.click();
+            await expect(this.menuLokasiAwal).toBeVisible();
+            console.log(`✅ [SUCCESS] Tombol Edit Lokasi Awal berhasil diklik dan muncul menu edit lokasi awal`);
+
+            //Isi field alamat awal
+            await expect(this.fieldAlamatAwal).toBeVisible();
+            await this.fieldAlamatAwal.fill(alamat);
+            await expect(this.fieldAlamatAwal).toHaveValue(alamat);
+            const valueTempatAwal = await this.fieldAlamatAwal.inputValue();
+            console.log(`✅ [SUCCESS] Field "Nama Tempat Awal Pickup" terisi: ${valueTempatAwal}`);
+
+            //Isi alamat tujuan
+            await expect(this.fieldAlamatLengkap).toBeVisible();
+            await this.fieldAlamatLengkap.fill('');
+            await this.fieldAlamatLengkap.type(alamat, { delay: 200 });
+            await this.page.waitForTimeout(1000);
+            const totalData = await this.itemsALamatLengkap.count();
+
+            if(!totalData){
+                throw new Error(`⚠️ [EMPTY] Tidak ditemukan data untuk input "${alamat}"`);
+            }
+
+            for (let i = 0; i < totalData; i++) {
+                await expect(this.itemsALamatLengkap.nth(i)).toBeVisible();
+                console.log(`Item ${i + 1}: ${await this.itemsALamatLengkap.nth(i).innerText()}`);
+            }
+
+            await this.itemsALamatLengkap.first().click();
+            const valueAlamatLengkap = await this.fieldAlamatLengkap.inputValue();
+            console.log(`✅ [SUCCESS] Field "Alamat Lengkap" terisi: ${valueAlamatLengkap}`);
+
+            const actions = {
+                'Simpan': {
+                    tombol: await this.page.locator('#saveButton'),
+                    message: `✅ [SUCCESS] Lokasi awal berhasil edit: ${alamat} dan ${valueAlamatLengkap}`
+                },
+                'Batal': {
+                    tombol: await this.page.locator('#hideLokasiAsal'),
+                    message: `✅ [SUCCESS] Lokasi awal batal edit`
+                }
+            };
+
+            const selected = actions[button];
+
+            if (!selected) {
+                throw new Error(`❌ [FAILED] Tombol "${button}" tidak valid`);
+            }
+
+            await selected.tombol.click();
+            console.log(`${selected.message}`);
+            //Cek
+            await this.notif.notificationCheck();
+        } catch(error){
+            console.log(`❌ [FAILED] ${error.message}`);
+            throw error;
+        }
+    }
+
     async lokasiTujuan(alamat = [], button){
         try{
             if (alamat.length === 0) {
@@ -118,7 +184,7 @@ export class addLocation{
                 await expect(this.menuLokasiTujuan).toBeVisible();
                 console.log(`✅ [SUCCESS] Tombol Tambah Lokasi Tujuan berhasil diklik dan muncul menu tambah lokasi tujuan`);
 
-                //Isi field alamat tujuan
+                //Isi field nama tujuan
                 await expect(this.fieldNamaTujuan).toBeVisible();
                 await this.fieldNamaTujuan.fill(daftarAlamat);
                 await expect(this.fieldNamaTujuan).toHaveValue(daftarAlamat);
@@ -127,8 +193,9 @@ export class addLocation{
 
                 //Isi alamat tujuan
                 await expect(this.fieldAlamatLengkap).toBeVisible();
-                await this.fieldAlamatLengkap.type(daftarAlamat, { delay: 250 });
-                await this.page.waitForTimeout(1000);
+                //await this.fieldAlamatLengkap.type(daftarAlamat, { delay: 250 });
+                await this.fieldAlamatLengkap.fill(daftarAlamat);
+                await this.page.waitForTimeout(1500);
                 const totalData = await this.itemsALamatLengkap.count();
 
                 if(!totalData){
@@ -167,6 +234,69 @@ export class addLocation{
                 //Cek
                 await this.notif.notificationCheck();
             }
+        } catch(error){
+            console.log(`❌ [FAILED] ${error.message}`);
+            throw error;
+        }
+    }
+
+    async editLokasiTujuan(indek, alamat, button){
+        try{
+            const bEdit = this.page.locator('.mb-1\\.5 > .mr-4');
+            await expect(bEdit.nth(indek)).toBeVisible();
+            await bEdit.nth(indek).click();
+            await expect(this.menuLokasiTujuan).toBeVisible();
+            console.log(`✅ [SUCCESS] Menu edit lokasi tujuan ke ${indek+1} berhasil diklik`);
+
+            //Isi field nama tujuan
+            await expect(this.fieldNamaTujuan).toBeVisible();
+            await this.fieldNamaTujuan.fill(alamat);
+            await expect(this.fieldNamaTujuan).toHaveValue(alamat);
+            const valueNamaTujuan = await this.fieldNamaTujuan.inputValue();
+            console.log(`✅ [SUCCESS] Field "Nama Tujuan" terisi: ${valueNamaTujuan}`);
+
+            //Isi alamat tujuan
+            await expect(this.fieldAlamatLengkap).toBeVisible();
+            await this.fieldAlamatLengkap.fill('');
+            await this.fieldAlamatLengkap.type(alamat, { delay: 250 });
+            await this.page.waitForTimeout(1000);
+            const totalData = await this.itemsALamatLengkap.count();
+
+            if(!totalData){
+                throw new Error(`⚠️ [EMPTY] Tidak ditemukan data untuk input "${alamat}"`);
+            }
+
+            for (let i = 0; i < totalData; i++) {
+                await expect(this.itemsALamatLengkap.nth(i)).toBeVisible();
+                console.log(`Item ${i + 1}: ${await this.itemsALamatLengkap.nth(i).innerText()}`);
+            }
+
+            await this.itemsALamatLengkap.first().click();
+            const valueAlamatLengkap = await this.fieldAlamatLengkap.inputValue();
+            console.log(`✅ [SUCCESS] Field "Alamat Lengkap" terisi: ${valueAlamatLengkap}`);
+
+            const actions = {
+                'Simpan': {
+                    tombol: await this.page.getByRole('button', { name: 'Simpan' }),
+                    message: `✅ [SUCCESS] Lokasi Tujuan berhasil diedit: ${alamat} dan ${valueAlamatLengkap}`
+                },
+                'Batal': {
+                    tombol: await this.page.locator('#hideDestination'),
+                    message: `✅ [SUCCESS] Lokasi tujuan batal diedit`
+                }
+            };
+
+            const selected = actions[button];
+
+            if (!selected) {
+                throw new Error(`❌ [FAILED] Tombol "${button}" tidak valid`);
+            }
+
+            await selected.tombol.click();
+            console.log(`${selected.message}`);
+
+            //Cek
+            await this.notif.notificationCheck();
         } catch(error){
             console.log(`❌ [FAILED] ${error.message}`);
             throw error;
