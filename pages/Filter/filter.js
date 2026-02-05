@@ -16,6 +16,9 @@ export class filter {
         //Karyawan
         this.containerKaryawan = page.locator('#dropdownEmployee');
         this.itemsKaryawan = this.containerKaryawan.locator('li');
+        //Role
+        this.containerRole = page.locator('#dropdownRole');
+        this.itemsRole = this.containerRole.locator('li');
         //Status
         this.todo = page.locator('#cboxFilterTodo');
         this.doing = page.locator('#cboxFilterDoing');
@@ -47,6 +50,11 @@ export class filter {
                 container: this.containerKaryawan,
                 items: this.itemsKaryawan,
                 message: 'Karyawan'
+            },
+            'Role': {
+                container: this.containerRole,
+                items: this.itemsRole,
+                message: 'Role'
             }
         };
 
