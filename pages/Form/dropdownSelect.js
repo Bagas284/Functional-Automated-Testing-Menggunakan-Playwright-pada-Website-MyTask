@@ -17,47 +17,42 @@ export class dropdownSelect {
     }
 
     async fieldDropdown(label, teks) {
-    try {
-        if (!teks) {
-            console.log(`⚠️ [EMPTY] Field "${label}" kosong`);
-            await this.page.mouse.click(50, 50);
-            return;
-        }
+        try {
+            if (!teks) {
+                console.log(`⚠️ [EMPTY] Field "${label}" kosong`);
+                await this.page.mouse.click(50, 50);
+                return;
+            }
 
-        switch (label) {
-            case 'Role':
-                await this.selectOption(this.dropdownRole, teks);
-                break;
-            case 'Tipe Penugasan':
-            case 'Karyawan':
-                await this.selectFill(label, teks)
-                break;
-            default:
-                throw new Error(`❌ [FAILED] Field dropdown "${label}" tidak ditemukan`);
-        }
+            switch (label) {
+                case 'Role':
+                    await this.selectOption(this.dropdownRole, teks);
+                    break;
+                case 'Tipe Penugasan':
+                case 'Karyawan':
+                    await this.selectFill(label, teks)
+                    break;
+                default:
+                    throw new Error(`❌ [FAILED] Field dropdown "${label}" tidak ditemukan`);
+            }
 
-    } catch (error) {
-        console.log(error.message);
-        throw error;
+        } catch (error) {
+            console.log(error.message);
+            throw error;
+        }
     }
-}
 
     async selectOption(locator, teks) {
-        const option = locator.locator(`option:has-text("${teks}")`);
+        try{
+            await expect(locator).toBeVisible();
+            await locator.selectOption({ label: teks });
 
-        const count = await option.count();
-
-        if (count === 0) {
-            throw new Error(`❌ [FAILED] Option "${teks}" tidak ditemukan di dropdown`);
+            await expect(locator).toHaveValue(await locator.inputValue());
+            console.log(`✅ [SUCCESS] Select "${teks}" berhasil dipilih`);
+        } catch (error){
+            console.log(`❌ [FAILED] Option "${teks}" tidak ditemukan di dropdown`);
         }
-
-        const value = await option.getAttribute('value');
-
-        await locator.selectOption({ value });
-
-        await expect(locator).toHaveValue(value);
-
-        console.log(`✅ [SUCCESS] Select "${teks}" berhasil dipilih`);
+       
     }
 
     async selectFill(label, teks){
