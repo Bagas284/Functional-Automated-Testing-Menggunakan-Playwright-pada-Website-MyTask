@@ -8,10 +8,11 @@ import { radioButton } from "../pages/Form/radioButton";
 import { form } from "../pages/Form/form";
 import { dropdownSelect } from "../pages/Form/dropdownSelect";
 import { notifikasi } from "../pages/Notifikasi/notifikasi";
+import { checkData } from "../pages/Cek Data/checkData";
 
 test.use({ storageState: 'user.json' });
 test.describe('Pengguna', () => {
-    let url, sidebar, sortir, tombol, tipePengguna, inputForm, selectField, notif;
+    let url, sidebar, sortir, tombol, tipePengguna, inputForm, selectField, notif, detailData;
 
     const penggunaWeb = {
         tipePengguna: 'Web User',
@@ -48,6 +49,7 @@ test.describe('Pengguna', () => {
         inputForm = new form(page);
         selectField = new dropdownSelect(page);
         notif = new notifikasi(page);
+        detailData = new checkData(page);
 
         await url.navigate('https://mytask-staging.transtrack.id/dashboard');
         await url.checkUrl('https://mytask-staging.transtrack.id/dashboard')
@@ -111,7 +113,7 @@ test.describe('Pengguna', () => {
                 await runSearchTest(page, 1, penggunaWeb.namaPengguna);
             })
 
-            test('Input Dengan Mengosongkan Semua Field', async ({ page }) => {
+            test('Input Dengan Mengosongkan Semua Field', async () => {
                 await tipePengguna.selectRadioButton(penggunaWeb.tipePengguna);
                 await selectField.fieldDropdown('Role', penggunaWeb.role);
                 await inputForm.formInput('Nama Pengguna', '');
@@ -139,7 +141,7 @@ test.describe('Pengguna', () => {
                 await runSearchTest(page, 1, penggunaMobile.namaPengguna);
             })
 
-            test('Input Dengan Mengosongkan Semua Field', async ({ page }) => {
+            test('Input Dengan Mengosongkan Semua Field', async () => {
                 await tipePengguna.selectRadioButton(penggunaMobile.tipePengguna);
                 await inputForm.formInput('Nama Pengguna', '');
                 await inputForm.formInput('Email', '');
@@ -150,6 +152,21 @@ test.describe('Pengguna', () => {
                 await url.checkUrl('https://mytask-staging.transtrack.id/users/create');
                 await notif.notificationCheck();
             })
+        })
+    })
+
+    test.describe('Pengguna - Detail Pengguna', () => {
+        test.beforeEach(async ({ page }) => {
+            await runSearchTest(page, 1, penggunaWeb.namaPengguna);
+            await tombol.moreOption(penggunaWeb.namaPengguna, 'Detail');
+        })
+
+        test('Detail Pengguna - Kesesuaian Data', async () => {
+            await detailData.detailCheckData('WEB');
+            await detailData.detailCheckData(penggunaWeb.role);
+            await detailData.detailCheckData(penggunaWeb.namaPengguna);
+            await detailData.detailCheckData(penggunaWeb.email);
+            await detailData.detailCheckData(penggunaWeb.noTelpon);
         })
     })
 })
