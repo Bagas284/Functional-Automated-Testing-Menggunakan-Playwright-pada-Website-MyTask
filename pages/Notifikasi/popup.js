@@ -10,6 +10,7 @@ export class popup {
         this.popupPidahUser = page.locator('#modal-transfer-users');
         this.popupSuksesPindah = page.locator('#modal-success');
         this.popupInputLaporan = page.getByRole('heading', { name: 'Hapus Input Laporan' });
+        this.popupInputPassword = page.getByPlaceholder('Input Password');
         //Button Role
         this.buttonBatal = page.locator('#modal-confirm-delete').getByText('Batal');
         this.buttonHapus = page.locator('button').filter({ hasText: /^Ya$/ });
@@ -29,6 +30,10 @@ export class popup {
         this.bBatalHapusInput = page.getByRole('button', { name: 'Cancel' });
         this.bHapusInput = page.getByRole('button', { name: 'Delete' });
 
+        //Button Pengguna
+        this.bKonfirmasiHapus = page.locator('button').filter({ hasText: 'Hapus'});
+        this.bBatalKonfirmasiHapus = page.locator('button').filter({ hasText: 'Batal' });
+
         this.notif = new notifikasi(page);
     }
 
@@ -44,7 +49,7 @@ export class popup {
             },
             'Ya': {
                 locator: this.buttonHapus,
-                message: 'role terhapus',
+                message: 'terhapus',
             },
             //Tipe Tugas
             'Konfirmasi': {
@@ -53,7 +58,7 @@ export class popup {
             },
             'Tidak, Kembali': {
                 locator: this.bBatalHapusTipeTugas,
-                message: 'tipe tugas batal hapus',
+                message: 'batal hapus',
             }
         };
 
@@ -147,5 +152,45 @@ export class popup {
         console.log(`✅ [SUCCESS] Klik tombol "${button}" dan ${action.message}`);
 
         await expect(this.popupInputLaporan).toBeHidden();
+    }
+
+    async popupConfirmDelete(password, button){
+        try{
+            await expect(this.popupInputPassword).toBeVisible();
+            await expect(this.bKonfirmasiHapus).toBeVisible();
+            await expect(this.bBatalKonfirmasiHapus).toBeVisible();
+            console.log(`✅ [SUCCESS] Popup konfirmasi penghapusan muncul`);
+
+            await this.popupInputPassword.fill(password);
+            const value = await this.popupInputPassword.inputValue();
+
+            if(!value){
+                await expect(this.bKonfirmasiHapus).toBeDisabled();
+                console.log(`⚠️ [EMPTY] Password kosong dan tombol hapus tidak dapat diklik`);
+                return;
+            } 
+
+            await expect(this.popupInputPassword).toHaveValue(password);
+            console.log(`✅ [SUCCESS] Field Password terisi: ${value}`);
+
+            if(button === 'Batal'){
+                await this.bBatalKonfirmasiHapus.click();
+                await expect(this.popupInputPassword).toBeHidden();
+                console.log(`✅ [SUCCESS] Berhasil klik ${button} dan pengguna batal dihapus`);
+                return;
+            }
+            await this.bKonfirmasiHapus.click();
+
+            const sukses = await this.notif.notificationCheck();
+
+            if(sukses){
+                await expect(this.popupInputPassword).toBeHidden();
+                console.log(`✅ [SUCCESS] Berhasil klik ${button} dan pengguna dihapus`);
+            } else{
+                await expect(this.popupInputPassword).toBeVisible();
+            }
+        } catch(error){
+            console.log(`❌ [FAILED] ${error.message}`);
+        }
     }
 }

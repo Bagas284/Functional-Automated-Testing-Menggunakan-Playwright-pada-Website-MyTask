@@ -9,10 +9,11 @@ import { form } from "../pages/Form/form";
 import { dropdownSelect } from "../pages/Form/dropdownSelect";
 import { notifikasi } from "../pages/Notifikasi/notifikasi";
 import { checkData } from "../pages/Cek Data/checkData";
+import { popup } from "../pages/Notifikasi/popup";
 
 test.use({ storageState: 'user.json' });
 test.describe('Pengguna', () => {
-    let url, sidebar, sortir, tombol, tipePengguna, inputForm, selectField, notif, detailData;
+    let url, sidebar, sortir, tombol, tipePengguna, inputForm, selectField, notif, detailData, havePopup;
 
     const penggunaWeb = {
         tipePengguna: 'Web User',
@@ -29,6 +30,17 @@ test.describe('Pengguna', () => {
         email: 'bagasaldianatamobile@transtrack.id',
         noTelpon: '009988776655',
         pinAkun: '123456'
+    }
+
+    const penggunaWebBaru = {
+        role: 'Supervisor',
+        namaPengguna: 'Bagas Magang Website',
+        noTelpon: '111111111111',
+    }
+
+    const penggunaMobileBaru = {
+        namaPengguna: 'Bagas Magang Mobile',
+        noTelpon: '222222222222',
     }
 
     const runSearchTest = async (page, column, keyword) => {
@@ -50,6 +62,7 @@ test.describe('Pengguna', () => {
         selectField = new dropdownSelect(page);
         notif = new notifikasi(page);
         detailData = new checkData(page);
+        havePopup = new popup(page);
 
         await url.navigate('https://mytask-staging.transtrack.id/dashboard');
         await url.checkUrl('https://mytask-staging.transtrack.id/dashboard')
@@ -99,7 +112,7 @@ test.describe('Pengguna', () => {
         })
 
         test.describe('Pengguna Web', () => {
-            test('Tambah Pengguna Web Dengan Mengisi Semua Field', async ({ page }) => {
+            test('Tambah Pengguna Dengan Mengisi Semua Field', async ({ page }) => {
                 await tipePengguna.selectRadioButton(penggunaWeb.tipePengguna);
                 await selectField.fieldDropdown('Role', penggunaWeb.role);
                 await inputForm.formInput('Nama Pengguna', penggunaWeb.namaPengguna);
@@ -115,7 +128,7 @@ test.describe('Pengguna', () => {
 
             test('Input Dengan Mengosongkan Semua Field', async () => {
                 await tipePengguna.selectRadioButton(penggunaWeb.tipePengguna);
-                await selectField.fieldDropdown('Role', penggunaWeb.role);
+                await selectField.fieldDropdown('Role', '');
                 await inputForm.formInput('Nama Pengguna', '');
                 await inputForm.formInput('Email', '');
                 await inputForm.formInput('Nomor Telepon', '');
@@ -128,7 +141,7 @@ test.describe('Pengguna', () => {
         })
 
         test.describe('Pengguna Mobile', () => {
-            test('Tambah Pengguna Web Dengan Mengisi Semua Field', async ({ page }) => {
+            test('Tambah Pengguna Dengan Mengisi Semua Field', async ({ page }) => {
                 await tipePengguna.selectRadioButton(penggunaMobile.tipePengguna);
                 await inputForm.formInput('Nama Pengguna', penggunaMobile.namaPengguna);
                 await inputForm.formInput('Email', penggunaMobile.email);
@@ -167,6 +180,91 @@ test.describe('Pengguna', () => {
             await detailData.detailCheckData(penggunaWeb.namaPengguna);
             await detailData.detailCheckData(penggunaWeb.email);
             await detailData.detailCheckData(penggunaWeb.noTelpon);
+        })
+    })
+
+    test.describe('Pengguna - Update Pengguna', () => {
+        test.describe('Tipe Pengguna Web', () => {
+            test.beforeEach(async ({ page }) => {
+                await runSearchTest(page, 1, penggunaWeb.namaPengguna);
+                await tombol.moreOption(penggunaWeb.namaPengguna, 'Edit');
+            })
+
+            test('Update Dengan Mengosongkan Semua Field', async () => {
+                await inputForm.formInput('Nama Pengguna', '');
+                await inputForm.formInput('Nomor Telepon', '');
+                await tombol.checkAndClick('Perbarui');
+                //Cek
+                await notif.notificationCheck();
+            })
+
+            test('Update Dengan Mengisi Semua Field', async ({ page }) => {
+                await selectField.fieldDropdown('Role', penggunaWebBaru.role);
+                await inputForm.formInput('Nama Pengguna', penggunaWebBaru.namaPengguna);
+                await inputForm.formInput('Nomor Telepon', penggunaWebBaru.noTelpon);
+                await tombol.checkAndClick('Perbarui');
+                //Cek
+                await url.checkUrl('https://mytask-staging.transtrack.id/users');
+                await notif.notificationCheck();
+                await runSearchTest(page, 1, penggunaWebBaru.namaPengguna);
+                await tombol.moreOption(penggunaWebBaru.namaPengguna, 'Detail');
+                await detailData.detailCheckData('WEB');
+                await detailData.detailCheckData(penggunaWebBaru.role);
+                await detailData.detailCheckData(penggunaWebBaru.namaPengguna);
+                await detailData.detailCheckData(penggunaWebBaru.noTelpon);
+            })
+        })
+
+        test.describe('Tipe Pengguna Mobile', () => {
+            test.beforeEach(async ({ page }) => {
+                await runSearchTest(page, 1, penggunaMobile.namaPengguna);
+                await tombol.moreOption(penggunaMobile.namaPengguna, 'Edit');
+            })
+
+            test('Update Dengan Mengosongkan Semua Field', async () => {
+                await inputForm.formInput('Nama Pengguna', '');
+                await inputForm.formInput('Nomor Telepon', '');
+                await tombol.checkAndClick('Perbarui');
+                //Cek
+                await notif.notificationCheck();
+            })
+
+            test('Update Dengan Mengisi Semua Field', async ({ page }) => {
+                await inputForm.formInput('Nama Pengguna', penggunaMobileBaru.namaPengguna);
+                await inputForm.formInput('Nomor Telepon', penggunaMobileBaru.noTelpon);
+                await tombol.checkAndClick('Perbarui');
+                //Cek
+                await url.checkUrl('https://mytask-staging.transtrack.id/users');
+                await notif.notificationCheck();
+                await runSearchTest(page, 1, penggunaMobileBaru.namaPengguna);
+                await tombol.moreOption(penggunaMobileBaru.namaPengguna, 'Detail');
+                await detailData.detailCheckData('MOBILE');
+                await detailData.detailCheckData(penggunaMobileBaru.namaPengguna);
+                await detailData.detailCheckData(penggunaMobileBaru.noTelpon);
+            })
+        })
+    })
+
+    test.describe('Pengguna - Delete Pengguna', () => {
+        test.beforeEach(async ({ page }) => {
+            await runSearchTest(page, 1, penggunaWebBaru.namaPengguna);
+            await tombol.moreOption(penggunaWebBaru.namaPengguna, 'Hapus');
+        })
+
+        test('Passwrod Validation - Input Password Yang Salah', async() => {
+            await havePopup.popupDelete('Ya');
+            await havePopup.popupConfirmDelete('Password@', 'Hapus');
+        })
+
+        test('Password Validation - Input Kosong', async() =>{
+            await havePopup.popupDelete('Ya');
+            await havePopup.popupConfirmDelete('', 'Hapus');
+        })
+
+        test('Konfirmasi Delete Pengguna', async({ page }) =>{
+            await havePopup.popupDelete('Ya');
+            await havePopup.popupConfirmDelete('Password123@', 'Hapus');
+            await runSearchTest(page, 1, penggunaWebBaru.namaPengguna);
         })
     })
 })

@@ -42,6 +42,11 @@ export class notifikasi {
             "phone is required",
             "Gagal menambahkan pengguna",
             "Password/PIN harus diisi",
+            "Bad Request",
+            "Gagal memperbarui pengguna",
+            "User berhasil diubah",
+            "User berhasil dihapus",
+            "password is incorrect"
         ];
     }
 
