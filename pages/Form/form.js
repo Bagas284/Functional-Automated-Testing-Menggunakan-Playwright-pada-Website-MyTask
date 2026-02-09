@@ -29,7 +29,9 @@ export class form {
                     name: 'Deskripsi *'
                 });
                 break;
-
+            case 'PIN Akun':
+                inputForm = this.page.getByPlaceholder('Masukkan PIN');
+                break;
             default:
                 inputForm = this.page.getByRole('textbox', {
                     name: textArea

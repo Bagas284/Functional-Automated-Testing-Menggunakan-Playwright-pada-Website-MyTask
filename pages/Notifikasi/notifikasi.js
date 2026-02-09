@@ -35,6 +35,13 @@ export class notifikasi {
             "Success creating task",
             "Success",
             "Berhasil ubah data lokasi tujuan",
+            "Pengguna berhasil ditambahkan",
+            "role is required",
+            "name is required",
+            "email is required",
+            "phone is required",
+            "Gagal menambahkan pengguna",
+            "Password/PIN harus diisi",
         ];
     }
 
