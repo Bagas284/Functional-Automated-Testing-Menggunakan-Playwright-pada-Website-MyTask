@@ -47,6 +47,7 @@ export class notifikasi {
             "User berhasil diubah",
             "User berhasil dihapus",
             "password is incorrect"
+            "User berhasil diubah"
         ];
     }
 
