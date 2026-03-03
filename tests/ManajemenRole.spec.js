@@ -107,7 +107,7 @@ test.describe('Manajemen Role', () => {
 
             test('Manajemen Role - Update dengan Mengosongkan Field', async () => {
                 await inputForm.formInput('Nama Role', namaRoleBaru);
-                await inputForm.formInput('Deskripsi', deskripsiBaru);
+                await inputForm.formInput('Deskripsi User', deskripsiBaru);
                 await role.uncheckRole({
                     feature: ['Fitur']
                 });
@@ -122,7 +122,6 @@ test.describe('Manajemen Role', () => {
                 await role.uncheckRole({
                     feature: ['Fitur']
                 });
-                await page.waitForTimeout(1000);
                 await role.selectRole({
                     feature: ['Dashboard'],
                     // role: ['Dashboard'],

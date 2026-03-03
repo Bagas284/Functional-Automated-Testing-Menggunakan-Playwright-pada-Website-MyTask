@@ -29,6 +29,7 @@ export class logoutAction {
         } catch (error) {
             console.log('❌ [FAILED] Gagal membuka menu Logout');
             console.log(`   ↳ Reason: ${error.message}`);
+            throw error;
         }
     }
 
@@ -42,21 +43,27 @@ export class logoutAction {
                 'Popup logout tidak muncul'
             ).toBeTruthy();
 
-            if (teks === 'Log out') {
-                await expect(this.confirmLogout).toBeVisible();
-                await this.confirmLogout.click();
-                await expect(this.modalLogout).toBeHidden();
-                console.log('✅ [SUCCESS] User berhasil logout');
-            } else {
-                await expect(this.batalLogout).toBeVisible();
-                await this.batalLogout.click();
-                await expect(this.modalLogout).toBeHidden();
-                console.log('⚠️ [CANCELLED] User batal logout');
+            switch(teks){
+                case 'Log out':
+                    await expect(this.confirmLogout).toBeVisible();
+                    await this.confirmLogout.click();
+                    await expect(this.modalLogout).toBeHidden();
+                    console.log('✅ [SUCCESS] User berhasil logout');
+                break;
+                case 'Cancel':
+                    await expect(this.batalLogout).toBeVisible();
+                    await this.batalLogout.click();
+                    await expect(this.modalLogout).toBeHidden();
+                    console.log('✅ [SUCCESS] User batal logout');
+                break;
+                default:
+                    throw new Error(`Button tidak ada`);
             }
 
         } catch (error) {
             console.log('❌ [FAILED] Gagal memproses popup Logout');
             console.log(`   ↳ Reason: ${error.message}`);
+            throw error;
         }
     }
 }

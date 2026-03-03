@@ -12,6 +12,7 @@ export class navigateUrl {
         } catch (error) {
             console.log(`❌ [FAILED] Gagal navigasi ke halaman: ${url}`);
             console.log(`   ↳ Reason: ${error.message}`);
+            throw error;
         }
     }
 
@@ -22,6 +23,7 @@ export class navigateUrl {
         } catch (error) {
             console.log(`❌ [FAILED] URL tidak sesuai: ${url}`);
             console.log(`   ↳ Reason: ${error.message}`);
+            throw error;
         }
     }
 }

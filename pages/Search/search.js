@@ -27,6 +27,7 @@ export class search extends checkData {
         } catch (error) {
             console.log(`❌ [FAILED] Gagal melakukan search dengan keyword: "${teks}"`);
             console.log(`   ↳ Reason: ${error.message}`);
+            throw error;
         }
     }
 }

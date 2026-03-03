@@ -33,20 +33,27 @@ export class checkData {
         } catch (error) {
             console.log('❌ [FAILED] Gagal melakukan pengecekan data tabel');
             console.log(`   ↳ Reason: ${error.message}`);
+            throw error;
         }
     }
 
     //Cek detail dalam bentuk teks
     async detailCheckData(inputTeks) {
-        await this.page.waitForTimeout(1000);
-        const teks = await this.page.innerText('body');
         const expectedTeks =
             inputTeks?.trim() === "" || inputTeks == null ? "-" : inputTeks;
 
-        if (teks.includes(expectedTeks)) {
+        try {
+            await this.page.waitForTimeout(1000);
+            const teks = await this.page.innerText('body');
+
+            await expect(this.page.locator('body')).toContainText(expectedTeks);
+
             console.log(`✅ [SUCCESS] Data sesuai: teks "${expectedTeks}" ditemukan di halaman.`);
-        } else {
-            throw new Error(`❌ [FAILED] Data tidak sesuai: teks "${expectedTeks}" TIDAK ditemukan di halaman.`);
+
+        } catch (error) {
+            console.log(`❌ [FAILED] Data tidak sesuai: teks "${expectedTeks}" TIDAK ditemukan di halaman.`);
+            console.log(`   ↳ Reason: ${error.message}`);
+            throw error;
         }
     }
 
@@ -71,38 +78,44 @@ export class checkData {
     }
 
     //Cel checkbox
-    async dataCheckbox(){
-        await this.page.waitForTimeout(500);
-        // Ambil semua baris tabel (kecuali header)
-        const rows = await this.page.locator('table tbody tr');
-        const totalRows = await rows.count(); // jumlah baris
+    async dataCheckbox() {
+        try {
+            await this.page.waitForTimeout(500);
 
-        for (let i = 0; i < totalRows; i++) {
-            const row = rows.nth(i);
-            // Ambil nama fitur di kolom pertama
-            const fitur = await row.locator('td:nth-child(1)').innerText();
+            const rows = await this.page.locator('table tbody tr');
+            const totalRows = await rows.count();
 
-            // Ambil semua checkbox
-            const view = row.locator('input[type="checkbox"]').nth(1);
-            const create = row.locator('input[type="checkbox"]').nth(2);
-            const edit = row.locator('input[type="checkbox"]').nth(3);
-            const del = row.locator('input[type="checkbox"]').nth(4);
+            for (let i = 0; i < totalRows; i++) {
+                const row = rows.nth(i);
 
-            // Cek status
-            const v = await view.isChecked();
-            const c = await create.isChecked();
-            const e = await edit.isChecked();
-            const d = await del.isChecked();
+                const fitur = await row.locator('td:nth-child(1)').innerText();
 
-            // Print hanya jika ada yang tercentang
-            if (v || c || e || d) {
-                console.log(`Fitur: ${fitur}`);
-                if (v) console.log("   - View ✔️");
-                if (c) console.log("   - Create ✔️");
-                if (e) console.log("   - Edit ✔️");
-                if (d) console.log("   - Delete ✔️");
-                console.log("-------------------------");
+                const checkboxes = row.locator('input[type="checkbox"]');
+
+                const view = checkboxes.nth(1);
+                const create = checkboxes.nth(2);
+                const edit = checkboxes.nth(3);
+                const del = checkboxes.nth(4);
+
+                const v = await view.isChecked();
+                const c = await create.isChecked();
+                const e = await edit.isChecked();
+                const d = await del.isChecked();
+
+                if (v || c || e || d) {
+                    console.log(`Fitur: ${fitur}`);
+                    if (v) console.log("   - View ✔️");
+                    if (c) console.log("   - Create ✔️");
+                    if (e) console.log("   - Edit ✔️");
+                    if (d) console.log("   - Delete ✔️");
+                    console.log("-------------------------");
+                }
             }
+
+        } catch (error) {
+            console.error("❌ [FAILED] Terjadi error saat membaca data checkbox");
+            console.log(`   ↳ Reason: ${error.message}`);
+            throw error;
         }
     }
 

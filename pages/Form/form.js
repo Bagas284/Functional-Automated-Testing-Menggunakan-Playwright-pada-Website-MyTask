@@ -1,6 +1,5 @@
 import { expect } from "@playwright/test";
 import { button } from "../Button/button";
-import { error } from "node:console";
 
 export class form {
     constructor(page) {
@@ -15,43 +14,49 @@ export class form {
 
     //Field form
     async formInput(textArea, teks, index = null) {
-        let inputForm;
+        try{
+            let inputForm;
 
-        switch (textArea) {
-            case 'Deskripsi User':
-                inputForm = this.page.getByRole('textbox', {
-                    name: 'Ex:  Untuk mengatur user'
-                });
-                break;
-            
-            case 'Deskripsi Kategori':
-                inputForm = this.page.getByRole('textbox', {
-                    name: 'Deskripsi *'
-                });
-                break;
-            case 'PIN Akun':
-                inputForm = this.page.getByPlaceholder('Masukkan PIN');
-                break;
-            default:
-                inputForm = this.page.getByRole('textbox', {
-                    name: textArea
-                });
-        }
+            switch (textArea) {
+                case 'Deskripsi User':
+                    inputForm = this.page.getByRole('textbox', {
+                        name: 'Ex:  Untuk mengatur user'
+                    });
+                    break;
+                
+                case 'Deskripsi Kategori':
+                    inputForm = this.page.getByRole('textbox', {
+                        name: 'Deskripsi *'
+                    });
+                    break;
+                case 'PIN Akun':
+                    inputForm = this.page.getByPlaceholder('Masukkan PIN');
+                    break;
+                default:
+                    inputForm = this.page.getByRole('textbox', {
+                        name: textArea
+                    });
+            }
 
-        if (index !== null) {
-            inputForm = inputForm.nth(index);
-        }
+            if (index !== null) {
+                inputForm = inputForm.nth(index);
+            }
 
-        await expect(inputForm).toBeVisible();
-        await inputForm.fill(teks);
-        await expect(inputForm).toHaveValue(teks);
+            await expect(inputForm).toBeVisible();
 
-        if(!teks){
-            console.log(`⚠️ [EMPTY] Field "${textArea}" kosong`);
-        } else{
-            await expect(inputForm).toHaveValue(teks);
+            if(!teks){
+                console.log(`⚠️ [EMPTY] Field "${textArea}" kosong`);
+            } else{
+                await inputForm.fill(teks);
+                await expect(inputForm).toHaveValue(teks);
+            }
+
             const value = await inputForm.inputValue();
             console.log(`✅ [SUCCESS] Field "${textArea}" terisi: ${value}`);
+        } catch(error){
+            console.log(`❌ [FAILED] Gagal melakukan mengisi field ${textArea}`);
+            console.log(`   ↳ Reason: ${error.message}`);
+            throw error;
         }
     }
 

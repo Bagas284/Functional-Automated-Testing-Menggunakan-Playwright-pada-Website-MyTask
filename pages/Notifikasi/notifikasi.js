@@ -55,7 +55,6 @@ export class notifikasi {
         try {
             const notifs = this.page.getByTestId('toast-content');
 
-            // Pastikan minimal 1 notifikasi muncul
             await expect(notifs.first()).toBeVisible();
 
             const notifCount = await notifs.count();

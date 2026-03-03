@@ -2,10 +2,10 @@
   "cookies": [
     {
       "name": "auth:token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBsb3llZUlkIjoxMTQsImV4cCI6MTc3MTM0NTY0NywiaWQiOjExOSwidXNlcklkIjoxMTl9.KnjbC53ug1w2W5pbxVVx4D1xCSU7ohNc63GwmQhyglU",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBsb3llZUlkIjoxMTQsImV4cCI6MTc3MzE2NTM5MSwiaWQiOjExOSwidXNlcklkIjoxMTl9.REZB4I0xl-c4RaUr0KBrI1w-HUAb0GFBTtZl9oBgViE",
       "domain": "mytask-staging.transtrack.id",
       "path": "/",
-      "expires": 1770827247.556884,
+      "expires": 1772646991.850315,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"

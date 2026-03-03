@@ -5,21 +5,73 @@ export class checkboxRole {
         this.page = page;
     }
 
-    //Check checkbox
+    //Check Role
     async selectRole({ feature = [], role = [], action = [] } = {}) {
-        if (feature.length === 0) {
-            console.log('⚠️ [EMPTY] Feature kosong');
-        } else {
+        if (feature.length > 0) {
+            await this.selectFeature(feature);
+        }
+
+        if (role.length > 0 && action.length > 0) {
+            await this.selectRoleAction(role, action);
+        }
+
+        if (
+            feature.length === 0 &&
+            (role.length === 0 || action.length === 0)
+        ) {
+            console.log('⚠️ [EMPTY] Tidak ada input yang bisa diproses');
+        }
+    }
+
+    //Uncheck checkbox
+    async uncheckRole({feature = []} = {}){
+        try {
+            if (feature.length === 0) {
+                console.log('⚠️ [EMPTY] Feature kosong');
+            } else {
+                for (const roleName of feature) {
+                    let checkbox;
+
+                    // Select All (Fitur)
+                    if (roleName === 'Fitur') {
+                        checkbox = this.page
+                            .getByRole('columnheader', { name: roleName })
+                            .getByRole('checkbox');
+                    } else {
+                        // Select per nama fitur
+                        checkbox = this.page
+                            .getByRole('cell', { name: roleName })
+                            .getByRole('checkbox');
+                    }
+
+                    await expect(
+                        checkbox,
+                        `❌ [FAILED] Checkbox '${roleName}' tidak ditemukan`
+                    ).toBeVisible();
+
+                    await checkbox.uncheck();
+                    await expect(checkbox).not.toBeChecked();
+
+                    console.log(`✅ [SUCCESS] Checkbox '${roleName}' berhasil diupdate dan tidak tercentang`);
+                }
+            }
+        } catch (error) {
+            console.log(`❌ [FAILED] Gagal memproses select role`);
+            console.log(`   ↳ Reason: ${error.message}`);
+            throw error
+        }
+    }
+
+    async selectFeature(feature = []) {
+        try {
             for (const roleName of feature) {
                 let checkbox;
 
-                // Select All (Fitur)
                 if (roleName === 'Fitur') {
                     checkbox = this.page
                         .getByRole('columnheader', { name: roleName })
                         .getByRole('checkbox');
                 } else {
-                    // Select per nama fitur
                     checkbox = this.page
                         .getByRole('cell', { name: roleName })
                         .getByRole('checkbox');
@@ -35,13 +87,14 @@ export class checkboxRole {
 
                 console.log(`✅ [SUCCESS] Checkbox '${roleName}' berhasil dicentang`);
             }
+        } catch (error) {
+            console.log(`❌ [FAILED] Gagal memproses select role`);
+            console.log(`   ↳ Reason: ${error.message}`);
+            throw error
         }
+    }
 
-        if (role.length === 0 || action.length === 0) {
-            console.log('⚠️ [EMPTY] Role atau Action kosong');
-            return;
-        }
-
+    async selectRoleAction(role = [], action = []) {
         const columnMap = {
             view: 2,
             create: 3,
@@ -72,39 +125,6 @@ export class checkboxRole {
                     console.log(`❌ [FAILED] Role: "${roles}" | Action: "${act}"`);
                     console.log(`   ↳ Reason: ${error.message}`);
                 }
-            }
-        }
-    }
-
-    //Uncheck checkbox
-    async uncheckRole({feature = []} = {}){
-        if (feature.length === 0) {
-            console.log('⚠️ [EMPTY] Feature kosong');
-        } else {
-            for (const roleName of feature) {
-                let checkbox;
-
-                // Select All (Fitur)
-                if (roleName === 'Fitur') {
-                    checkbox = this.page
-                        .getByRole('columnheader', { name: roleName })
-                        .getByRole('checkbox');
-                } else {
-                    // Select per nama fitur
-                    checkbox = this.page
-                        .getByRole('cell', { name: roleName })
-                        .getByRole('checkbox');
-                }
-
-                await expect(
-                    checkbox,
-                    `❌ [FAILED] Checkbox '${roleName}' tidak ditemukan`
-                ).toBeVisible();
-
-                await checkbox.uncheck();
-                await expect(checkbox).not.toBeChecked();
-
-                console.log(`✅ [SUCCESS] Checkbox '${roleName}' berhasil diupdate dan tidak tercentang`);
             }
         }
     }

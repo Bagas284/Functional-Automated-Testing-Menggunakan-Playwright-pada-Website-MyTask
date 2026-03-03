@@ -22,11 +22,12 @@ export class button {
                 console.log(`⚠️ [DISABLED] Tombol "${teks}" tidak aktif`);
             }
 
-            await this.page.waitForTimeout(1000);
+            await this.page.waitForTimeout(800);
 
         } catch (error) {
             console.log(`❌ [FAILED] Gagal memproses tombol "${teks}"`);
             console.log(`   ↳ Reason: ${error.message}`);
+            throw error
         }
     }
 

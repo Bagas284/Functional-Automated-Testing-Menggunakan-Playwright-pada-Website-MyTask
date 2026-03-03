@@ -11,6 +11,10 @@ export class formLogin {
     async usernameInput(username) {
         try {
             await expect(this.usernameField).toBeVisible();
+            if(!username){
+                console.log(`⚠️ [EMPTY] Field username kosong`);
+                return;
+            }
             await this.usernameField.fill(username);
 
             const value = await this.usernameField.inputValue();
@@ -20,12 +24,17 @@ export class formLogin {
         } catch (error) {
             console.log('❌ [FAILED] Gagal mengisi Username');
             console.log(`   ↳ Reason: ${error.message}`);
+            throw error;
         }
     }
 
     async passwordInput(password) {
         try {
             await expect(this.passwordField).toBeVisible();
+            if(!password){
+                console.log(`⚠️ [EMPTY] Field password kosong`);
+                return;
+            }
             await this.passwordField.fill(password);
 
             const value = await this.passwordField.inputValue();
@@ -35,6 +44,7 @@ export class formLogin {
         } catch (error) {
             console.log('❌ [FAILED] Gagal mengisi Password');
             console.log(`   ↳ Reason: ${error.message}`);
+            throw error;
         }
     }
 
@@ -46,6 +56,7 @@ export class formLogin {
         } catch (error) {
             console.log('❌ [FAILED] Gagal klik tombol Login');
             console.log(`   ↳ Reason: ${error.message}`);
+            throw error;
         }
     }
 }

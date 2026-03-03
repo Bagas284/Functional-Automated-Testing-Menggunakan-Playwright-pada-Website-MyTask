@@ -21,6 +21,7 @@ export class menuSidebar {
         } catch (error) {
             console.log(`❌ [FAILED] Gagal klik sidebar: ${teks}`);
             console.log(`   ↳ Reason: ${error.message}`);
+            throw error;
         }
     }
 }
