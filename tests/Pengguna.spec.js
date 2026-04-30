@@ -33,9 +33,9 @@ test.describe('Pengguna', () => {
     }
 
     const penggunaWebBaru = {
-        role: 'Supervisor',
+        role: 'Pengawas',
         namaPengguna: 'Bagas Magang Website',
-        noTelpon: '111111111111',
+        noTelpon: '121212121212',
     }
 
     const penggunaMobileBaru = {
@@ -47,6 +47,7 @@ test.describe('Pengguna', () => {
         const inputSearch = new search(page, column);
         await inputSearch.search(keyword);
     }
+
     const runFIlterTest = async (page, column) => {
         const inputSearch = new search(page, column);
         await inputSearch.checkSearch();
@@ -74,7 +75,7 @@ test.describe('Pengguna', () => {
 
     test.describe('Pengguna - Search', () => {
         test('Search Nama Pengguna Terdata', async ({ page }) => {
-            await runSearchTest(page, 1, "Bagas Magang");
+            await runSearchTest(page, 1, "Bagas Admin Tambang");
         })
         test('Search Nama Pengguna Tidak Terdata', async ({ page }) => {
             await runSearchTest(page, 1, "Bagas Aldianata");
@@ -87,6 +88,7 @@ test.describe('Pengguna', () => {
         })
         test('Select Role', async ({ page }) => {
             await sortir.filterDropdown('Role', 'Administrator');
+            //await page.mouse.click(50, 50);
             await tombol.checkAndClick('Terapkan Filter');
             await page.mouse.click(50, 50);
             await page.waitForTimeout(1000);
@@ -95,8 +97,8 @@ test.describe('Pengguna', () => {
         test('Date Range', async ({ page }) => {
             await sortir.filterDateRange(
                 'range',
-                '2026', 'Jan', '8',
-                '2026', 'Jan', '11'
+                '2026', 'Mar', '1',
+                '2026', 'Mar', '10'
             );
             await tombol.checkAndClick('Terapkan Filter');
             await page.mouse.click(50, 50);

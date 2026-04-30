@@ -13,7 +13,7 @@ test.use({ storageState: 'user.json' });
 test.describe('Manajemen Role', () => {
     let url, sidebar, tombol, inputForm, notif, role, detailData, havePopup;
 
-    const namaRole = 'Pengawas';
+    const namaRole = 'Kurir';
     const deskripsi = 'Role untuk pengawas';
 
     const namaRoleBaru = 'Operator';
@@ -44,7 +44,7 @@ test.describe('Manajemen Role', () => {
 
         test.describe('Manajemen Role - Search', () => {
             test('Search Role Terdata', async ({ page }) => {
-                await runSearchTest(page, 2, "Supervisor");
+                await runSearchTest(page, 2, "Pengawas");
             })
 
             test('Search Role Tidak Terdata', async ({ page }) => {
@@ -150,8 +150,8 @@ test.describe('Manajemen Role', () => {
                 await runSearchTest(page, 2, namaRoleBaru);
             })
             test('Manajemen Role - Delete dengan ada user', async ({ page }) => {
-                await runSearchTest(page, 2, namaRole);
-                await tombol.moreOption(namaRole, 'Hapus');
+                await runSearchTest(page, 2, 'Pengawas');
+                await tombol.moreOption('Pengawas', 'Hapus');
                 await havePopup.popupDelete('Ya');
                 await havePopup.popupWarningUser('Ya, ganti');
                 await havePopup.popupSelectRole('Administrator', 'Pindahkan');

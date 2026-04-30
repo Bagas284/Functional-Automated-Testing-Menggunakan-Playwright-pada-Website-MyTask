@@ -52,7 +52,7 @@ test.describe('Kategori Laporan', () => {
 
         test.describe('Kategori Laporan - Search', () => {
             test('Search Nama Laporan Terdata', async ({ page }) => {
-                await runSearchTest(page, 2, "Inspeksi Hasil Tambang");
+                await runSearchTest(page, 2, "Inspeksi Tambang Batu Bara");
             })
 
             test('Search Nama Laporan Tidak Terdata', async ({ page }) => {

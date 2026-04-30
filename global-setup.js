@@ -23,7 +23,7 @@ async function globalSetup() {
     const userContext = await browser.newContext();
     const userPage = await userContext.newPage();
 
-    await loginAndSave(userContext, userPage, 'bagas@transtrack.id', 'Password123@', 'user.json');
+    await loginAndSave(userContext, userPage, 'bagastambang@transtrack.id', 'Password123@', 'user.json');
 
     await browser.close();
 }

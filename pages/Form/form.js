@@ -46,6 +46,7 @@ export class form {
 
             if(!teks){
                 console.log(`⚠️ [EMPTY] Field "${textArea}" kosong`);
+                await inputForm.fill(teks)
             } else{
                 await inputForm.fill(teks);
                 await expect(inputForm).toHaveValue(teks);

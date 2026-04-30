@@ -8,16 +8,16 @@ import { search } from "../pages/Search/search";
 import { popup } from "../pages/Notifikasi/popup";
 
 test.use({ storageState: 'user.json' });
-test.describe('Manajemen Role', () => {
+test.describe('Tipe Penugasan', () => {
     let url, sidebar, tombol, inputForm, notif, havePopup;
 
-    const namaTipeTugas = 'Tipe A';
-    const kode = 'T01';
-    const informasi = 'Informasi A';
+    const namaTipeTugas = 'Tipe C';
+    const kode = 'T03';
+    const informasi = 'Informasi C';
 
-    const namaTipeTugasBaru = 'Tipe B';
-    const kodeBaru = 'T02';
-    const informasiBaru = 'Informasi B';
+    const namaTipeTugasBaru = 'Perawatan';
+    const kodeBaru = 'P02';
+    const informasiBaru = 'Perawatan Jaringan';
 
     const runSearchTest = async (page, column, keyword) => {
         const inputSearch = new search(page, column);

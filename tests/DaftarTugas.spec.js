@@ -18,26 +18,23 @@ test.describe('Daftar Tugas', () => {
     let url, sidebar, sortir, tombol, selectField, inputForm, selectDeadline, tipePengerjaan, tambahLokasi, notif, detailData;
 
     const formDaftarTugas = {
-        tipePenugasan: 'Tipe A',
-        judulPenugasan: 'Pemantauan Alat Berat',
-        namaKaryawan1: 'Mobile',
-        namaKaryawan2: 'Bagas Mobile',
-        deskripsiPenugasan: 'Memantau alat berat',
+        tipePenugasan: 'Pengambilan Hasil Tambang',
+        judulPenugasan: 'Pengiriman Hasil Tambang',
+        namaKaryawan1: 'Bagas Aldinata Mobile',
+        deskripsiPenugasan: 'Mengirim Hasil Tambang ke sektor A',
         noReferensi: '001',
         lokasiAwal: 'Transtrack Bandung',
-        lokasiTujuan: ['Telkom University', 'Unpad'],
+        lokasiTujuan: ['Telkom University'],
         radioButton: 'Bebas'
     }
 
     const formDaftarTugasBaru = {
         tipePenugasanBaru: 'Tipe B',
-        judulPenugasanBaru: 'Perawatan Jaringan Bandung',
-        deskripsiPenugasanBaru: 'Tugas merawat jaringan daerah Bandung',
+        judulPenugasanBaru: 'Pencatatan Hasil Tambang',
+        deskripsiPenugasanBaru: 'Tugas mencatat hasil tambang',
         noReferensiBaru: '01',
         lokasiAwalBaru: 'Telkom University',
         lokasiTujuanBaru1: 'Sukabirus, Bandung',
-        lokasiTujuanBaru2: 'Sukapura, Bandung',
-        lokasiTujuanBaru3: ['Baleendah, Bandung'],
         radioButtonBaru: 'Tersusun'
     }
 
@@ -74,7 +71,7 @@ test.describe('Daftar Tugas', () => {
 
         test.describe('Daftar Tugas - Search', () => {
             test('Search Daftar Tugas Terdata', async ({ page }) => {
-                await runSearchTest(page, 1, "Pemasangan Router");
+                await runSearchTest(page, 1, "Pengumpulan Hasil Tambang");
             })
 
             test('Search Daftar Tugas Tidak Terdata', async ({ page }) => {
@@ -87,14 +84,14 @@ test.describe('Daftar Tugas', () => {
                 await sortir.filterOption();               
             })
             test('Select Karyawan', async ({ page }) => {
-                await sortir.filterDropdown('Karyawan', 'Mobile');
+                await sortir.filterDropdown('Karyawan', 'Bagas Aldinata Mobile');
                 await tombol.checkAndClick('Terapkan Filter');
                 await page.mouse.click(50, 50);
                 await runFIlterTest(page, 1);
             })
 
             test('Select Status', async ({ page }) => {
-                await sortir.filterStatus(['Batal']);
+                await sortir.filterStatus(['Dalam Antrian']);
                 await tombol.checkAndClick('Terapkan Filter');
                 await page.mouse.click(50, 50);
                 await runFIlterTest(page, 1);
@@ -103,11 +100,11 @@ test.describe('Daftar Tugas', () => {
             test('Date Range', async ({ page }) => {
                 await sortir.filterDateRange(
                     'start',
-                    '2026', 'Feb', '1'
+                    '2026', 'Mar', '29'
                 );
                 await sortir.filterDateRange(
                     'end',
-                    '2026', 'Feb', '25'
+                    '2026', 'Mar', '31'
                 );
                 await tombol.checkAndClick('Terapkan Filter');
                 await page.mouse.click(50, 50);
@@ -154,8 +151,8 @@ test.describe('Daftar Tugas', () => {
             test('Tambah Tugas dengan Mengisi Semua Field', async ({ page }) => {
                 await selectField.fieldDropdown('Tipe Penugasan', formDaftarTugas.tipePenugasan);
                 await inputForm.formInput('Judul Penugasan', formDaftarTugas.judulPenugasan);
-                await selectField.fieldDropdown('Karyawan', formDaftarTugas.namaKaryawan2);
-                await selectDeadline.tenggatWaktu('2026', 'Feb', '20');
+                await selectField.fieldDropdown('Karyawan', formDaftarTugas.namaKaryawan1);
+                await selectDeadline.tenggatWaktu('2026', 'May', '25');
                 await inputForm.formInput('Deskripsi Penugasan', formDaftarTugas.deskripsiPenugasan);
                 await inputForm.formInput ('No Referensi', formDaftarTugas.noReferensi);
                 await tipePengerjaan.selectRadioButton(formDaftarTugas.radioButton);
@@ -177,14 +174,12 @@ test.describe('Daftar Tugas', () => {
                 await tombol.checkAndClick('Detail');
                 await detailData.detailCheckDataField('Tipe Penugasan', formDaftarTugas.tipePenugasan);
                 await detailData.detailCheckDataField('Judul Penugasan', formDaftarTugas.judulPenugasan);
-                await detailData.detailCheckDataField('pilih karyawan', formDaftarTugas.namaKaryawan2);
-                await detailData.detailCheckDataField('Tenggat Waktu', '2026-02-20', {exact: true});
+                await detailData.detailCheckDataField('pilih karyawan', formDaftarTugas.namaKaryawan1);
+                await detailData.detailCheckDataField('Tenggat Waktu', '2026-05-25', {exact: true});
                 await detailData.detailCheckData(formDaftarTugas.lokasiAwal);
                 await detailData.detailCheckData('TransTRACK.ID Bandung, 24, Jalan Emong, Burangrang, Lengkong, Bandung, Jawa Barat, Jawa, 40262, Indonesia');
                 await detailData.detailCheckData('Telkom University');
                 await detailData.detailCheckData('Telkom University, 1, Jalan Sukabirus, Citeureup, Bandung, Jawa Barat, Jawa, 40257, Indonesia');
-                await detailData.detailCheckData('Unpad');
-                await detailData.detailCheckData('Universitas Padjadjaran, Jalan Raya Jatinangor, Bandung, Sumedang, Jawa Barat, Jawa, 45363, Indonesia');
                 await detailData.detailCheckDataField('Deskripsi Penugasan', formDaftarTugas.deskripsiPenugasan);
                 await detailData.detailCheckDataField('No Referensi', formDaftarTugas.noReferensi);
                 await detailData.checkRadioButton(formDaftarTugas.radioButton);
@@ -204,8 +199,6 @@ test.describe('Daftar Tugas', () => {
                 await selectField.fieldDropdown('Karyawan', '');
                 await inputForm.formInput('Deskripsi Penugasan', '');
                 await inputForm.formInput ('No Referensi', '');
-                await tambahLokasi.hapusLokasiTujuan(0, 'Konfirmasi');
-                await tambahLokasi.hapusLokasiTujuan(0, 'Konfirmasi');
                 await tombol.checkAndClick('Update');
                 await notif.notificationCheck();
             })
@@ -213,14 +206,12 @@ test.describe('Daftar Tugas', () => {
             test('Update Dengan Mengisi Semua Field', async() =>{
                 await selectField.fieldDropdown('Tipe Penugasan', formDaftarTugasBaru.tipePenugasanBaru);
                 await inputForm.formInput('Judul Penugasan', formDaftarTugasBaru.judulPenugasanBaru);
-                await selectDeadline.tenggatWaktu('2026', 'Feb', '10');
+                await selectDeadline.tenggatWaktu('2026', 'May', '30');
                 await tambahLokasi.editLokasiAwal(formDaftarTugasBaru.lokasiAwalBaru, 'Simpan');
                 await inputForm.formInput('Deskripsi Penugasan', formDaftarTugasBaru.deskripsiPenugasanBaru);
                 await inputForm.formInput ('No Referensi', formDaftarTugasBaru.noReferensiBaru);
                 await tipePengerjaan.selectRadioButton(formDaftarTugasBaru.radioButtonBaru);
                 await tambahLokasi.editLokasiTujuan(0, formDaftarTugasBaru.lokasiTujuanBaru1, 'Simpan');
-                await tambahLokasi.editLokasiTujuan(1, formDaftarTugasBaru.lokasiTujuanBaru2, 'Simpan');
-                await tambahLokasi.lokasiTujuan(formDaftarTugasBaru.lokasiTujuanBaru3, 'Simpan');
                 await tombol.checkAndClick('Update');
             })
         })

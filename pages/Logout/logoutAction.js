@@ -50,7 +50,7 @@ export class logoutAction {
                     await expect(this.modalLogout).toBeHidden();
                     console.log('✅ [SUCCESS] User berhasil logout');
                 break;
-                case 'Cancel':
+                case 'Tidak, Kembali':
                     await expect(this.batalLogout).toBeVisible();
                     await this.batalLogout.click();
                     await expect(this.modalLogout).toBeHidden();
